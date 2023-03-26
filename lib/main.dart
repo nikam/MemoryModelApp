@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:gpuiosbundle/store.dart';
+import 'package:gpuiosbundle/message.dart';
 
 import 'package:path_provider/path_provider.dart';
 //import 'package:platform/platform.dart';
