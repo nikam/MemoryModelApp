@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gpuiosbundle/main.dart';
 
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+
 //import 'dart:io';
 //import 'package:flutter/services.dart';
 
@@ -82,11 +84,36 @@ class StorePage extends StatelessWidget {
               },
               child: Text('Result'),
             ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+              ),
+              onPressed: () {
+                email();
+              },
+              child: Text('Send Email'),
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+void email() async {
+  String outputPath = FFIBridge.getFile();
+
+  final Email email = Email(
+    body: 'Email body',
+    subject: 'Test',
+    recipients: ['anikam@ucsc.edu'],
+    // cc: ['cc@example.com'],
+    // bcc: ['bcc@example.com'],
+    attachmentPaths: [outputPath],
+    // isHTML: false,
+  );
+
+  await FlutterEmailSender.send(email);
 }
 
 Future<String> readCounter(String path) async {

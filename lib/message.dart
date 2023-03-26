@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gpuiosbundle/main.dart';
 
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+
 //import 'dart:io';
 //import 'package:flutter/services.dart';
 
@@ -31,8 +33,8 @@ class MessagePage extends StatelessWidget {
               onPressed: () {
                 // FFIBridge obj = FFIBridge();
                 FFIBridge.initialize(
-                    "assets/litmustest_store_default.spv",
-                    "assets/litmustest_store_results.spv",
+                    "assets/litmustest_message_passing_default.spv",
+                    "assets/litmustest_message_passing_results.spv",
                     "assets/parameters_basic.txt");
               },
               child: Text('Default Explorer'),
@@ -43,8 +45,8 @@ class MessagePage extends StatelessWidget {
               ),
               onPressed: () {
                 FFIBridge.initialize(
-                    "assets/litmustest_store_default.spv",
-                    "assets/litmustest_store_results.spv",
+                    "assets/litmustest_message_passing_default.spv",
+                    "assets/litmustest_message_passing_results.spv",
                     "assets/parameters_stress.txt");
               },
               child: Text('Default Stress'),
@@ -82,6 +84,15 @@ class MessagePage extends StatelessWidget {
               },
               child: Text('Result'),
             ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+              ),
+              onPressed: () {
+                email();
+              },
+              child: Text('Send Email'),
+            ),
           ],
         ),
       ),
@@ -107,4 +118,20 @@ Future<File> get(String path) async {
 
   // print(path);
   return File(path);
+}
+
+void email() async {
+  String outputPath = FFIBridge.getFile();
+
+  final Email email = Email(
+    body: 'Email body',
+    subject: 'Test',
+    recipients: ['anikam@ucsc.edu'],
+    // cc: ['cc@example.com'],
+    // bcc: ['bcc@example.com'],
+    attachmentPaths: [outputPath],
+    // isHTML: false,
+  );
+
+  await FlutterEmailSender.send(email);
 }
