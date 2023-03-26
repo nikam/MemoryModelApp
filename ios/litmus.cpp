@@ -203,7 +203,14 @@ void run(string &shader_file, string &result_shader_file, map<string, int> param
     auto instance = Instance(false);
     auto device = getDevice(instance, params, outputFile);
     int testingThreads = params["workgroupSize"] * params["testingWorkgroups"];
+    
+\
+    
     int testLocSize = testingThreads * params["numMemLocations"] * params["memStride"];
+    
+    cout << "working:" << params["workgroupSize"] << "\n";
+    cout << "testing:" << params["testingWorkgroups"] << "\n";
+    
 
     int numSeq = 0;
     int numInter = 0;
