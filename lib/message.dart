@@ -12,7 +12,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 class MessagePage extends StatelessWidget {
   // const StorePage({super.key, required this.title});
 
-  final String title = "GPU Store Test";
+  final String title = "GPU Message Passing Test";
 
   //const StorePage({super.key});
 
