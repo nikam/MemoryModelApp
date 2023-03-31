@@ -21,6 +21,53 @@
 //#include <android/log.h>
 #include "easyvk.hpp"
 
+#include "dart_api_dl.h"
+#include "dart_native_api.h"
+#include "dart_api_dl.h"
+
+
+// Receives NativePort ID from Flutter code
+static Dart_Port dart_port = 0;
+
+int iter = 0;
+//int total_iter = 0;
+
+DART_EXPORT intptr_t initDartApiDL(void* data) {
+    return Dart_InitializeApiDL(data);
+}
+
+// Ensure that the function is not-mangled; exported as a pure C function
+//static Dart_Port_DL dart_port = 0;
+
+extern "C" /* <= C++ only */ __attribute__((visibility("default"))) __attribute__((used))
+
+void startWork( Dart_Port sendPort)
+{
+    
+    // here receive the port and assign it once
+    dart_port = sendPort;
+}
+
+extern "C" /* <= C++ only */ __attribute__((visibility("default"))) __attribute__((used))
+
+void work( Dart_Port sendPort)
+{
+//
+     sendPort = dart_port;
+     Dart_CObject msg;
+     msg.type = Dart_CObject_kInt64;
+//
+//   // cout<< "c++ :" << message << "\n";
+//    msg.value.as_string = ;
+    // The function is thread-safe; you can call it anywhere on your C++ code
+    msg.value.as_int64 =  iter;
+    
+    // this is the place where we keep sending the data back
+    Dart_PostCObject_DL(sendPort, &msg);
+}
+
+
+
 using namespace std;
 using namespace easyvk;
 
@@ -37,7 +84,7 @@ constexpr char *TAG = "Main";
 bool tuningMode = false;
 bool conformanceMode = false;
 
-//const std::string configFile = "parameters.txt";
+
 
 /** Returns the GPU to use for this test run. */
 Device getDevice(Instance &instance, map<string, int> params, ofstream &outputFile) {
@@ -260,6 +307,13 @@ void run(string &shader_file, string &result_shader_file, map<string, int> param
         const char* iterationChar = iterationStr.c_str();
 //        jstring iterationNum = env->NewStringUTF(iterationChar);
 //        env->CallVoidMethod(obj, iterationMethod, iterationNum);
+        
+        // we run test from 1
+        iter = i+1;
+        
+        // here we send data back to c++
+        work(dart_port);
+        
 
         auto program = Program(device, shader_file.c_str(), buffers);
         auto resultProgram = Program(device, result_shader_file.c_str(), resultBuffers);
