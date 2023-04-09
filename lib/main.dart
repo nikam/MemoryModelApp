@@ -1,125 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'dart:ffi';
-import 'package:ffi/ffi.dart';
-//import 'package:ffi/ffi.dart';
 import 'package:gpuiosbundle/store.dart';
-import 'package:gpuiosbundle/message.dart';
+//import 'package:gpuiosbundle/message.dart';
 
-import 'package:path_provider/path_provider.dart';
 //import 'package:platform/platform.dart';
-
-import 'dart:io';
-import 'dart:isolate';
-
-typedef Native_Dart_InitializeApiDL = Int32 Function(Pointer<Void> data);
-typedef FFI_Dart_InitializeApiDL = int Function(Pointer<Void> data);
-typedef StartWorkType = Void Function(Int64 port);
-typedef StartWorkFunc = void Function(int port);
-
-var iter = 0;
-
-//var interactiveCppRequests = null;
-
-void mssg_init() {
-  DynamicLibrary nativeApi = DynamicLibrary.process();
-
-  // Dart_InitializeApiDL defined in Dart SDK (implemented in dart_api_dl.c)
-  FFI_Dart_InitializeApiDL initializeFunc = nativeApi.lookupFunction<
-      Native_Dart_InitializeApiDL, FFI_Dart_InitializeApiDL>("initDartApiDL");
-
-  if (initializeFunc(NativeApi.initializeApiDLData) != 0) {
-    throw "Failed to initialize Dart API";
-  }
-
-  final StartWorkFunc startWork =
-      nativeApi.lookup<NativeFunction<StartWorkType>>("startWork").asFunction();
-
-  final interactiveCppRequests = ReceivePort()
-    ..listen((data) {
-      print('Received: ${data} from Go');
-      // interactiveCppRequests.close();
-    });
-
-  final int nativePort = interactiveCppRequests.sendPort.nativePort;
-
-// first we establish the port details
-  startWork(nativePort);
-}
-
-// void mssg() {
-//   // keep it ready to listen requests
-//   interactiveCppRequests = ReceivePort()
-//     ..listen((data) {
-//       print('Received: ${data} from Go');
-//       // interactiveCppRequests.close();
-//     });
-// }
-
-class FFIBridge {
-  static String outputFile = "";
-
-  static const platformMethodChannel =
-      MethodChannel('com.flutter.gpuiosbundle/getPath');
-
-  static Future<String> printy(String arg) async {
-    // String value = "";
-
-    var tmp;
-
-    try {
-      tmp = await platformMethodChannel.invokeMethod<String>('printy', arg);
-    } catch (e) {
-      print(e);
-    }
-
-    return tmp;
-  }
-
-  static void call(String spv, String res, String param) async {
-    var shaderComp = await printy(spv);
-    var shaderRes = await printy(res);
-    // var para = await printy("assets/parameters_basic.txt");
-    var para = await printy(param);
-
-    Directory tempDir = await getTemporaryDirectory();
-    String path = tempDir.path;
-
-    DynamicLibrary nativeApiLib = DynamicLibrary.process();
-    // final runPointer = nativeApiLib.lookup<NativeFunction<run_test>>('runTest');
-
-    final int Function(Pointer<Utf8> a, Pointer<Utf8> b, Pointer<Utf8> c,
-            Pointer<Utf8> d, Pointer<Utf8> e) run =
-        nativeApiLib
-            .lookup<
-                NativeFunction<
-                    Int32 Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>,
-                        Pointer<Utf8>, Pointer<Utf8>)>>('runTest')
-            .asFunction();
-
-    String test = "Store";
-    run(test.toNativeUtf8(), shaderComp.toNativeUtf8(),
-        shaderRes.toNativeUtf8(), para.toNativeUtf8(), path.toNativeUtf8());
-
-    outputFile = path + "/output.txt";
-  }
-
-  static String getFile() {
-    return outputFile;
-  }
-
-  static bool initialize(String spv, String res, String param) {
-    call(spv, res, param);
-    return true;
-  }
-}
 
 void main() {
   runApp(const MyApp());
-  // FFIBridge.initialize();
-  mssg_init();
-  // mssg();
+  // mssg_init();
 }
 
 class MyApp extends StatelessWidget {
@@ -198,11 +85,11 @@ class MyHomePage extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            Divider(), //here is a divider
-            Text(
+            const Divider(), //here is a divider
+            const Text(
               "Weak Memory Test",
               textAlign: TextAlign.left,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
 
             ListTile(
@@ -214,7 +101,8 @@ class MyHomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return MessagePage();
+                    return StorePage();
+                    // return MessagePage();
                   }),
                 );
               },

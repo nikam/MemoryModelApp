@@ -39,15 +39,43 @@ import Flutter
         //  var tmp: String?
           
      
-          
+          //print(key)
           let tmp = mainBundle.path(forResource: key, ofType: nil)
           
-        //  print(tmp)
+        //   var path: String
+
+        //   path = ""
+          
+        //   if let filepath = Bundle.main.path(forResource: key, ofType: nil)
+        //   {
+        //       do
+        //       {
+        //           let contents = try String(contentsOfFile: filepath)
+        //         //  print(contents)
+                  
+        //           path = filepath
+
+        //         // print(filepath)
+
+        //       }
+        //       catch
+        //       {
+        //           print("Contents could not be loaded.")
+        //       }
+        //   }
+        //   else
+        //   {
+        //       print(key)
+        //       print("not found.")
+        //   }
+          
+        //  // print(tmp)
           
           let path = tmp!
+
+         //let path = filepath!
           
-         // print(path)
-        ///  print("\(path)")
+          //print(path)
           result (path)
           
         }

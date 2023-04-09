@@ -26,14 +26,14 @@
 #include "dart_api_dl.h"
 
 
-// Receives NativePort ID from Flutter code
+//Receives NativePort ID from Flutter code
 static Dart_Port dart_port = 0;
 
 int iter = 0;
 //int total_iter = 0;
 
 DART_EXPORT intptr_t initDartApiDL(void* data) {
-    return Dart_InitializeApiDL(data);
+   return Dart_InitializeApiDL(data);
 }
 
 // Ensure that the function is not-mangled; exported as a pure C function
@@ -43,9 +43,8 @@ extern "C" /* <= C++ only */ __attribute__((visibility("default"))) __attribute_
 
 void startWork( Dart_Port sendPort)
 {
-    
-    // here receive the port and assign it once
-    dart_port = sendPort;
+   // here receive the port and assign it once
+   dart_port = sendPort;
 }
 
 extern "C" /* <= C++ only */ __attribute__((visibility("default"))) __attribute__((used))
@@ -53,17 +52,17 @@ extern "C" /* <= C++ only */ __attribute__((visibility("default"))) __attribute_
 void work( Dart_Port sendPort)
 {
 //
-     sendPort = dart_port;
-     Dart_CObject msg;
-     msg.type = Dart_CObject_kInt64;
+    sendPort = dart_port;
+    Dart_CObject msg;
+    msg.type = Dart_CObject_kInt64;
 //
 //   // cout<< "c++ :" << message << "\n";
 //    msg.value.as_string = ;
-    // The function is thread-safe; you can call it anywhere on your C++ code
-    msg.value.as_int64 =  iter;
-    
-    // this is the place where we keep sending the data back
-    Dart_PostCObject_DL(sendPort, &msg);
+   // The function is thread-safe; you can call it anywhere on your C++ code
+   msg.value.as_int64 =  iter;
+
+   // this is the place where we keep sending the data back
+   Dart_PostCObject_DL(sendPort, &msg);
 }
 
 
@@ -250,8 +249,7 @@ void run(string &shader_file, string &result_shader_file, map<string, int> param
     auto instance = Instance(false);
     auto device = getDevice(instance, params, outputFile);
     int testingThreads = params["workgroupSize"] * params["testingWorkgroups"];
-    
-\
+
     
     int testLocSize = testingThreads * params["numMemLocations"] * params["memStride"];
     
@@ -310,6 +308,9 @@ void run(string &shader_file, string &result_shader_file, map<string, int> param
         
         // we run test from 1
         iter = i+1;
+
+
+      //  cout<< "This is original:" << iter << "\n";
         
         // here we send data back to c++
         work(dart_port);
@@ -469,8 +470,14 @@ int runTest(char* test, char* shader, char* result, char* config, char* path)
     outputFilePath  += "/output.txt";
     
 
+    // cout << "Test Name: " << testName << "\n";
+    // cout << "Shader Name: " << shaderFile << "\n";
+    // cout << "Result Name: " << resultShaderFile << "\n";
+    // cout << "config file path Name: " << configFileFullPath << "\n";
+    // cout << "\n";
     
     ofstream outputFile;
+
     
     cout<< outputFilePath << "\n";
 
@@ -525,13 +532,15 @@ int runTest(char* test, char* shader, char* result, char* config, char* path)
 
     cout<<
             //filePath.c_str() <<
-            outputFilePath.c_str() <<
-            testName.c_str() <<
+            outputFilePath.c_str() << "\n" <<
+            testName.c_str() << "\n" <<
             readOutput(outputFilePath).c_str();
     
 //    cout<<
 //            testName.c_str() <<
 //            readOutput(outputFilePath).c_str();
+    
+    cout <<"returning from main";
 
     return 0;
 }
