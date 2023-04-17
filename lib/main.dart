@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gpuiosbundle/store.dart';
-//import 'package:gpuiosbundle/message.dart';
+import 'package:gpuiosbundle/message.dart';
+import 'package:gpuiosbundle/read.dart';
+//import 'package:gpuiosbundle/utilities.dart';
 
 //import 'package:platform/platform.dart';
 
 void main() {
   runApp(const MyApp());
+
+  // check method channel call
+  // printy("assets/store/litmustest_store_default.spv");
   // mssg_init();
 }
 
@@ -101,7 +106,7 @@ class MyHomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return StorePage();
+                    return MessagePage();
                     // return MessagePage();
                   }),
                 );
@@ -123,7 +128,7 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Store'),
+              title: const Text('Read'),
               onTap: () {
                 // Update the state of the app
                 // ...
@@ -131,7 +136,7 @@ class MyHomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return StorePage();
+                    return ReadPage();
                   }),
                 );
                 // Navigator.pop(context);

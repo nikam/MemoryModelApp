@@ -9,77 +9,77 @@ import Flutter
   ) -> Bool {
       
     
-      let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
+//       let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
       
       
-//      print("we are printing the swift stuff")
-//      print("\(path)")
-      let CHANNEL = FlutterMethodChannel(name: "com.flutter.gpuiosbundle/getPath", binaryMessenger: controller.binaryMessenger)
+// //      print("we are printing the swift stuff")
+// //      print("\(path)")
+//       let CHANNEL = FlutterMethodChannel(name: "com.flutter.gpuiosbundle/getPath", binaryMessenger: controller.binaryMessenger)
       
-      CHANNEL.setMethodCallHandler ({
-         [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+//       CHANNEL.setMethodCallHandler ({
+//          [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
           
-          guard call.method == "printy" else {
-              result(FlutterMethodNotImplemented)
-              return
-            }
+//           guard call.method == "printy" else {
+//               result(FlutterMethodNotImplemented)
+//               return
+//             }
            
-       //   print("we are here")
-          var arg: String!
+//        //   print("we are here")
+//           var arg: String!
           
-          arg = call.arguments as? String
+//           arg = call.arguments as? String
           
-          let val = arg!
+//           let val = arg!
           
-        //  print(arg)
+//         //  print(arg)
           
-          let key = controller.lookupKey(forAsset: String(val))
-          let mainBundle = Bundle.main
+//           let key = controller.lookupKey(forAsset: String(val))
+//           let mainBundle = Bundle.main
           
-        //  var tmp: String?
+//         //  var tmp: String?
           
      
-          //print(key)
-          let tmp = mainBundle.path(forResource: key, ofType: nil)
+//           //print(key)
+//           let tmp = mainBundle.path(forResource: key, ofType: nil)
           
-        //   var path: String
+//         //   var path: String
 
-        //   path = ""
+//         //   path = ""
           
-        //   if let filepath = Bundle.main.path(forResource: key, ofType: nil)
-        //   {
-        //       do
-        //       {
-        //           let contents = try String(contentsOfFile: filepath)
-        //         //  print(contents)
+//         //   if let filepath = Bundle.main.path(forResource: key, ofType: nil)
+//         //   {
+//         //       do
+//         //       {
+//         //           let contents = try String(contentsOfFile: filepath)
+//         //         //  print(contents)
                   
-        //           path = filepath
+//         //           path = filepath
 
-        //         // print(filepath)
+//         //         // print(filepath)
 
-        //       }
-        //       catch
-        //       {
-        //           print("Contents could not be loaded.")
-        //       }
-        //   }
-        //   else
-        //   {
-        //       print(key)
-        //       print("not found.")
-        //   }
+//         //       }
+//         //       catch
+//         //       {
+//         //           print("Contents could not be loaded.")
+//         //       }
+//         //   }
+//         //   else
+//         //   {
+//         //       print(key)
+//         //       print("not found.")
+//         //   }
           
-        //  // print(tmp)
+//         //  // print(tmp)
           
-          let path = tmp!
+//           let path = tmp!
 
-         //let path = filepath!
+//          //let path = filepath!
           
-          //print(path)
-          result (path)
+//           //print(path)
+//           result (path)
           
-        }
-      )
+//         }
+//       )
       
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

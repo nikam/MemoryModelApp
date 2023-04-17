@@ -69,6 +69,8 @@ flutter:
      - assets/store/litmustest_store_results.spv
      - assets/litmustest_message_passing_default.spv
      - assets/litmustest_message_passing_results.spv
+     - assets/litmustest_read_default.spv
+     - assets/litmustest_read_results.spv
      - assets/parameters_basic.txt
      - assets/parameters_stress.txt
      - assets/image.png

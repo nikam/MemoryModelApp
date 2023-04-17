@@ -109,12 +109,126 @@ class _StorePageState extends State<StorePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_title)),
-      body: Center(
+      body: Container(
         //child: Center(
 
+        alignment: Alignment.centerLeft,
+        margin: const EdgeInsets.all(24),
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              const Text(
+                'The store litmust test checks to see if two stores in one thread can be re-ordered according to a store and a load on a second thread',
+                // textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 15),
+              const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  //  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Initial State:',
+                      //  textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      '*x = 0, *y = 0',
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          backgroundColor: Color.fromARGB(255, 203, 198, 198)),
+                      // textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ]),
+              const SizedBox(height: 10),
+              const Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                Text(
+                  'Final State:',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'r0 == 1 && *x == 2',
+                  style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      backgroundColor: Color.fromARGB(255, 203, 198, 198)),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ]),
+              const SizedBox(height: 15),
+              Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Text(
+                      'Workgroup 0 Thread 0:',
+                      //  textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 5),
+                    Container(
+                      color: Colors.grey,
+                      child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              '0.1: atomic_store_explicit(x,2,memory_order_relaxed)',
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '0.2: atomic_store_explicit(y,1,memory_order_relaxed)',
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ]),
+                    ),
+                  ]),
+              const SizedBox(height: 15),
+              Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Text(
+                      'Workgroup 1 Thread 0',
+                      //  textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 5),
+                    Container(
+                      color: Colors.grey,
+                      child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              '1.1: r0 = atomic_load_explicit(y,memory_order_relaxed)',
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '1.2: atomic_Store_explicit(x,1,memory_order_relaxed)',
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ]),
+                    ),
+                  ]),
+              const SizedBox(height: 15),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
