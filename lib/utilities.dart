@@ -121,7 +121,7 @@ class FFIBridge {
     List<String> arg = map[2];
     SendPort sport = map[1];
 
-    print("reacher here");
+    //print("reacher here");
     mssg_init(sport);
 
     DynamicLibrary nativeApiLib = Platform.isAndroid
@@ -137,7 +137,7 @@ class FFIBridge {
                         Pointer<Utf8>, Pointer<Utf8>)>>('runTest')
             .asFunction();
 
-    String test = "Store";
+    String test = "GPU Litmus Test";
 
     //int litmus_test =
 
@@ -175,6 +175,8 @@ Future<void> call_bridge(String param, String shader, String result) async {
 }
 
 void email() async {
+  print(" I am in email");
+
   String outputPath = FFIBridge.getFile();
 
   final Email email = Email(

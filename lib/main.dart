@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: appTitle,
       home: MyHomePage(title: appTitle),
     );
@@ -37,12 +38,15 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: const Center(
-        //child: Center(
-        child: Text(
-          'This app uses litmus test to showcase the allowed behavious of GPU memory model. This app is required to be run with Android 8.0+ and IOS 8.0+, and GPU that supports Vulkan 1.1',
-          // textAlign: TextAlign.center,
-          overflow: TextOverflow.clip,
+      body: const SizedBox(
+        //   //child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'This app uses litmus test to showcase the allowed behavious of GPU memory model. This app is required to be run with Android 8.0+ and IOS 8.0+, and GPU that supports Vulkan 1.1',
+            // textAlign: TextAlign.center,
+            //  overflow: TextOverflow.clip,
+          ),
         ),
       ),
       drawer: Drawer(
@@ -91,10 +95,14 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             const Divider(), //here is a divider
-            const Text(
-              "Weak Memory Test",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+
+            const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
+                "Weak Memory Test",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
 
             ListTile(
@@ -141,202 +149,6 @@ class MyHomePage extends StatelessWidget {
                 );
                 // Navigator.pop(context);
               },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Store'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return StorePage();
-                  }),
-                );
-                // Navigator.pop(context);
-              },
-            ),
-            const AboutListTile(
-              // <-- SEE HERE
-              icon: Icon(
-                Icons.info,
-              ),
-              child: Text('About app'),
-              applicationIcon: Icon(
-                Icons.local_play,
-              ),
-              applicationName: 'Memory Models Testing App',
-              applicationVersion: '1.0.0',
-              applicationLegalese: '© 2023 GPU Harbor UCSC Team',
-              aboutBoxChildren: [
-                ///Content goes here...
-              ],
             ),
           ],
         ),
