@@ -1,4 +1,5 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
-    "cmake.sourceDirectory": "${workspaceFolder}/android/app/src/main/cpp"
+    "cmake.sourceDirectory": "${workspaceFolder}/android/app/src/main/cpp",
+    "cmake.configureOnOpen": false
 }

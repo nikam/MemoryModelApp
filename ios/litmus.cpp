@@ -246,6 +246,9 @@ int setBetween(int min, int max) {
 void run(string &shader_file, string &result_shader_file, map<string, int> params, ofstream &outputFile)
 {
     // initialize settings
+
+    //error validation - is this an issue? -> IOS 
+
     auto instance = Instance(false);
     auto device = getDevice(instance, params, outputFile);
     int testingThreads = params["workgroupSize"] * params["testingWorkgroups"];

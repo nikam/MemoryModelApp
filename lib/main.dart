@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gpuiosbundle/store.dart';
 import 'package:gpuiosbundle/message.dart';
 import 'package:gpuiosbundle/read.dart';
+import 'package:gpuiosbundle/lock.dart';
+import 'package:gpuiosbundle/tuning.dart';
 //import 'package:gpuiosbundle/utilities.dart';
 
 //import 'package:platform/platform.dart';
@@ -86,12 +88,33 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Running Multiple Test'),
+              title: const Text('Tuning/Conformance'),
               onTap: () {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return TuningPage();
+                    // return MessagePage();
+                  }),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Lock Tests'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return Lock();
+                    // return MessagePage();
+                  }),
+                );
               },
             ),
             const Divider(), //here is a divider

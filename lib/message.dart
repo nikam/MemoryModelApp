@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 //import 'package:gpuiosbundle/forms.dart';
 import 'package:gpuiosbundle/utilities.dart';
+import 'package:path_provider/path_provider.dart';
 
 String shader_spv = "assets/litmustest_message_passing_default.spv";
 String result_spv = "assets/litmustest_message_passing_results.spv";
@@ -43,6 +47,43 @@ class _MessagePageState extends State<MessagePage> {
   late bool _isEmailButtonDisabled;
   late int _counter;
   final subscription = controller.stream;
+  bool default_param = true;
+
+// explorer controllers
+  TextEditingController _iter = TextEditingController(text: '100');
+  TextEditingController _workgroup = TextEditingController(text: '2');
+  TextEditingController _maxworkgroup = TextEditingController(text: '4');
+  TextEditingController _size = TextEditingController(text: '256');
+  TextEditingController _shufflepct = TextEditingController(text: '0');
+  TextEditingController _barrierpct = TextEditingController(text: '0');
+  TextEditingController _scratchMemSize = TextEditingController(text: '2048');
+  TextEditingController _memStride = TextEditingController(text: '1');
+  TextEditingController _memStressPct = TextEditingController(text: '0');
+  TextEditingController _memStressIter = TextEditingController(text: '1024');
+  TextEditingController _memStressStoreFirstPct =
+      TextEditingController(text: '0');
+  TextEditingController _memStressStoreSecondPct =
+      TextEditingController(text: '100');
+  TextEditingController _preStressPct = TextEditingController(text: '0');
+  TextEditingController _preStressIter = TextEditingController(text: '128');
+  TextEditingController _preStressStoreFirstPct =
+      TextEditingController(text: '0');
+  TextEditingController _preStressStoreSecondPct =
+      TextEditingController(text: '0');
+  TextEditingController _stressLineSize = TextEditingController(text: '64');
+  TextEditingController _stressTargetLines = TextEditingController(text: '2');
+  TextEditingController _stressAssignmentStrategy =
+      TextEditingController(text: '100');
+  TextEditingController _numMemLocations = TextEditingController(text: '2');
+  TextEditingController _numOutputs = TextEditingController(text: '2');
+
+  // tuning controllers
+  TextEditingController _tIter = TextEditingController(text: '100');
+  TextEditingController _tConfigNum = TextEditingController(text: '10');
+  TextEditingController _tRandomSeed = TextEditingController(text: '');
+  TextEditingController _tWorkgroup = TextEditingController(text: '2');
+  TextEditingController _tMaxworkgroup = TextEditingController(text: '4');
+  TextEditingController _tSize = TextEditingController(text: '256');
 
   @override
   void initState() {
@@ -64,7 +105,65 @@ class _MessagePageState extends State<MessagePage> {
     }
   }
 
-  void _compute(String param, String shader, String result) async {
+  void _tuningClick() {
+    print("reached here");
+    FFIBridge.tuning(
+        "Tuning Test",
+        shader_spv,
+        result_spv,
+        _tConfigNum.text,
+        _tIter.text,
+        _tRandomSeed.text,
+        _tWorkgroup.text,
+        _tMaxworkgroup.text,
+        _tSize.text);
+  }
+
+  void _changeStress() {
+    _iter.text = '100';
+    _workgroup.text = '2';
+    _maxworkgroup.text = '4';
+    _size.text = '256';
+    _shufflepct.text = '0';
+    _barrierpct.text = '0';
+    _scratchMemSize.text = '2048';
+    _memStride.text = '1';
+    _memStressPct.text = '0';
+    _memStressIter.text = '1024';
+    _memStressStoreFirstPct.text = '0';
+    _memStressStoreSecondPct.text = '100';
+    _preStressPct.text = '0';
+    _preStressIter.text = '128';
+    _preStressStoreFirstPct.text = '0';
+    _preStressStoreSecondPct.text = '0';
+    _stressLineSize.text = '64';
+    _stressTargetLines.text = '2';
+    _stressAssignmentStrategy.text = '100';
+  }
+
+  void _changeDefault() {
+    _iter.text = '100';
+    _workgroup.text = '512';
+    _maxworkgroup.text = '1024';
+    _size.text = '256';
+    _shufflepct.text = '100';
+    _barrierpct.text = '100';
+    _scratchMemSize.text = '2048';
+    _memStride.text = '4';
+    _memStressPct.text = '100';
+    _memStressIter.text = '1024';
+    _memStressStoreFirstPct.text = '0';
+    _memStressStoreSecondPct.text = '100';
+    _preStressPct.text = '100';
+    _preStressIter.text = '128';
+    _preStressStoreFirstPct.text = '0';
+    _preStressStoreSecondPct.text = '100';
+    _stressLineSize.text = '64';
+    _stressTargetLines.text = '2';
+    _stressAssignmentStrategy.text = '100';
+  }
+
+  void _compute() async {
     setState(() {
       _counter = 0;
 
@@ -84,9 +183,10 @@ class _MessagePageState extends State<MessagePage> {
         _iterationMssg = "Computed $_counter from 100";
       });
     });
+
     // print("I am here");
 
-    await call_bridge(param, shader, result);
+    writeDefault();
 
     setState(() {
       _isExplorerButtonDisabled = true;
@@ -96,6 +196,66 @@ class _MessagePageState extends State<MessagePage> {
     });
 
     // print("when done");
+  }
+
+  void writeDefault() async {
+    //print("we here");
+    Map<String, dynamic> tuningParam = new Map();
+
+    tuningParam["iterations"] = _iter.text;
+    tuningParam["testingWorkgroups"] = _workgroup.text;
+    tuningParam["maxWorkgroups"] = _maxworkgroup.text;
+    tuningParam["workgroupSize"] = _size.text;
+    tuningParam["shufflePct"] = _shufflepct.text;
+    tuningParam["barrierPct"] = _barrierpct.text;
+    tuningParam["scratchMemorySize"] = _scratchMemSize.text;
+    tuningParam["memStride"] = _memStride.text;
+    tuningParam["memStressPct"] = _memStressPct.text;
+    tuningParam["preStressPct"] = _preStressPct.text;
+    tuningParam["memStressIterations"] = _memStressIter.text;
+    tuningParam["preStressIterations"] = _preStressIter.text;
+    tuningParam["stressLineSize"] = _stressLineSize.text;
+    tuningParam["stressTargetLines"] = _stressTargetLines.text;
+    tuningParam["stressStrategyBalancePct"] = _stressAssignmentStrategy.text;
+    tuningParam["memStressStoreFirstPct"] = _memStressStoreFirstPct.text;
+    tuningParam["memStressStoreSecondPct"] = _memStressStoreSecondPct.text;
+    tuningParam["preStressStoreFirstPct"] = _preStressStoreFirstPct.text;
+    tuningParam["preStressStoreSecondPct"] = _preStressStoreSecondPct.text;
+    tuningParam["numMemLocations"] = 2;
+    tuningParam["numOutputs"] = 2;
+
+    Directory tempDir = await getTemporaryDirectory();
+
+    // assign the global path value
+    cache = tempDir.path;
+
+    param_tmp = "$cache/$param_tmp";
+
+    //print(param_tmp);
+
+    // now we write these parameters to our cache file
+
+    // if the file exists delete it
+    if (await File(param_tmp).exists()) {
+      await File(param_tmp).delete();
+    }
+
+    File file = await File(param_tmp).create(recursive: true);
+
+    tuningParam.forEach((key, value) async {
+      file.writeAsStringSync("${key}=${value} \n", mode: FileMode.append);
+      //print("${key} = ${value}");
+    });
+
+    print(param_tmp);
+
+    File(param_tmp)
+        .openRead()
+        .transform(utf8.decoder)
+        .transform(LineSplitter())
+        .forEach((l) => print('line: $l'));
+
+    call_bridge(param_tmp, shader_spv, result_spv);
   }
 
   void _results() {
@@ -120,6 +280,718 @@ class _MessagePageState extends State<MessagePage> {
     });
   }
 
+  showExplorerDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(
+                  20.0,
+                ),
+              ),
+            ),
+            contentPadding: EdgeInsets.only(
+              top: 10.0,
+            ),
+            title: Text(
+              "Message Passing",
+              style: TextStyle(fontSize: 24.0),
+            ),
+            content: Container(
+              height: 400,
+              //width: 400, //or whatever you want
+
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  // child:
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          // mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Test Iteration:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _iter,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Testing Workgroups',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _workgroup,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Max Workgroup:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _maxworkgroup,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Workgroup Size:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _size,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Shuffle Percentage:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _shufflepct,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Barrier Perecentage:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _barrierpct,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Scratch Memory Size:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _scratchMemSize,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Memory Stride:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _memStride,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Memory Stress Percentage:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _memStressPct,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Memory Stress Iterations',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _memStressIter,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Memory Stress Store First Pct:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _memStressStoreFirstPct,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Memory Stress Store Second Pct:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _memStressStoreSecondPct,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Pre Stress Percentage:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _preStressPct,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Pre Stress Iterations:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _preStressIter,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Pre Stress Store First Pct:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _preStressStoreFirstPct,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Pre Stress Store Second Pct:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _preStressStoreSecondPct,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Stress Line Size:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _stressLineSize,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Stress Target Lines:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _stressTargetLines,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      'Stress Assignment Strategy:',
+                                    ),
+                                  ),
+                                  // SizedBox(width: 30),
+                                  SizedBox(
+                                      width: 50,
+                                      child: TextField(
+                                        controller: _stressAssignmentStrategy,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                "Test Parameters Presets",
+                                style: TextStyle(fontSize: 18.0),
+                              ),
+                            ),
+                            Align(
+                                alignment: Alignment.center,
+                                child: Wrap(children: <Widget>[
+                                  Container(
+                                    //  width: double.infinity,
+                                    height: 60,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        _changeStress();
+                                        // Navigator.of(context).pop();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.cyan,
+                                        // fixedSize: Size(250, 50),
+                                      ),
+                                      child: const Text(
+                                        "Default",
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    // width: double.infinity,
+                                    height: 60,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        _changeDefault();
+                                        //Navigator.of(context).pop();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.grey,
+                                        // fixedSize: Size(250, 50),
+                                      ),
+                                      child: const Text(
+                                        "Stress",
+                                      ),
+                                    ),
+                                  ),
+                                ]))
+                          ]),
+                    ),
+                  ),
+
+                  Align(
+                      alignment: Alignment.center,
+                      child: Wrap(children: <Widget>[
+                        Container(
+                          //  width: double.infinity,
+                          height: 60,
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _compute();
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.green,
+                              // fixedSize: Size(250, 50),
+                            ),
+                            child: Text(
+                              "Start",
+                            ),
+                          ),
+                        ),
+                        Container(
+                          // width: double.infinity,
+                          height: 60,
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blueGrey,
+                              // fixedSize: Size(250, 50),
+                            ),
+                            child: Text(
+                              "Close",
+                            ),
+                          ),
+                        ),
+                      ]))
+                ],
+              ),
+            ),
+          );
+
+          //),
+          //);
+        });
+  }
+
+  showTuningDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(
+                  20.0,
+                ),
+              ),
+            ),
+            contentPadding: EdgeInsets.only(
+              top: 10.0,
+            ),
+            title: Text(
+              "Message Passing",
+              style: TextStyle(fontSize: 24.0),
+            ),
+            content: Container(
+              height: 400,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(
+                            width: 160,
+                            child: Text(
+                              'Test Config Number:',
+                            ),
+                          ),
+                          // SizedBox(width: 30),
+                          SizedBox(
+                              width: 50,
+                              child: TextField(
+                                controller: _tConfigNum,
+                                textAlign: TextAlign.center,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(
+                            width: 160,
+                            child: Text(
+                              'Test Iteration:',
+                            ),
+                          ),
+                          // SizedBox(width: 30),
+                          SizedBox(
+                              width: 50,
+                              child: TextField(
+                                controller: _tIter,
+                                textAlign: TextAlign.center,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(
+                            width: 160,
+                            child: Text(
+                              'Random Seed:',
+                            ),
+                          ),
+                          // SizedBox(width: 30),
+                          SizedBox(
+                              width: 50,
+                              child: TextField(
+                                controller: _tRandomSeed,
+                                textAlign: TextAlign.center,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(
+                            width: 160,
+                            child: Text(
+                              'Testing Workgroups:',
+                            ),
+                          ),
+                          // SizedBox(width: 30),
+                          SizedBox(
+                              width: 50,
+                              child: TextField(
+                                controller: _tWorkgroup,
+                                textAlign: TextAlign.center,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(
+                            width: 160,
+                            child: Text(
+                              'Max Workgroups:',
+                            ),
+                          ),
+                          // SizedBox(width: 30),
+                          SizedBox(
+                              width: 50,
+                              child: TextField(
+                                controller: _tMaxworkgroup,
+                                textAlign: TextAlign.center,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(
+                            width: 160,
+                            child: Text(
+                              'Work Group Size:',
+                            ),
+                          ),
+                          // SizedBox(width: 30),
+                          SizedBox(
+                              width: 50,
+                              child: TextField(
+                                controller: _tSize,
+                                textAlign: TextAlign.center,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Align(
+                        alignment: Alignment.center,
+                        child: Wrap(children: <Widget>[
+                          Container(
+                            //  width: double.infinity,
+                            height: 60,
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _tuningClick();
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.green,
+                                // fixedSize: Size(250, 50),
+                              ),
+                              child: Text(
+                                "Start",
+                              ),
+                            ),
+                          ),
+                          Container(
+                            // width: double.infinity,
+                            height: 60,
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey,
+                                // fixedSize: Size(250, 50),
+                              ),
+                              child: Text(
+                                "Close",
+                              ),
+                            ),
+                          ),
+                        ]))
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   // print("controller is active");
 
   @override
@@ -128,7 +1000,7 @@ class _MessagePageState extends State<MessagePage> {
       appBar: AppBar(title: Text(_title)),
       body: Container(
         //child: Center(
-
+        //  height: 800,
         alignment: Alignment.centerLeft,
         margin: const EdgeInsets.all(24),
         child: Column(
@@ -270,7 +1142,7 @@ class _MessagePageState extends State<MessagePage> {
 
                 children: <Widget>[
                   SizedBox(
-                    width: 150, // <-- Your width
+                    width: 160, // <-- Your width
                     height: 50, // <-- Your height
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -280,8 +1152,7 @@ class _MessagePageState extends State<MessagePage> {
                               MaterialStatePropertyAll<Color>(Colors.green),
                         ),
                         onPressed: _isExplorerButtonDisabled
-                            ? () =>
-                                _compute(param_basic, shader_spv, result_spv)
+                            ? () => showExplorerDialog()
                             : null,
                         child: const Text('Default Explorer'),
                       ),
@@ -290,7 +1161,7 @@ class _MessagePageState extends State<MessagePage> {
                   // const SizedBox(height: 30),
 
                   SizedBox(
-                    width: 150, // <-- Your width
+                    width: 160, // <-- Your width
                     height: 50, // <-- Your height
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -300,17 +1171,16 @@ class _MessagePageState extends State<MessagePage> {
                               MaterialStatePropertyAll<Color>(Colors.green),
                         ),
                         onPressed: _isStressButtonDisabled
-                            ? () =>
-                                _compute(param_stress, shader_spv, result_spv)
+                            ? () => showTuningDialog()
                             : null,
-                        child: const Text('Default Stress'),
+                        child: const Text('Tuning'),
                       ),
                     ),
                   ),
                   //  const SizedBox(height: 30),
 
                   SizedBox(
-                    width: 150, // <-- Your width
+                    width: 160, // <-- Your width
                     height: 50, // <-- Your height
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -326,7 +1196,7 @@ class _MessagePageState extends State<MessagePage> {
                   ),
 
                   SizedBox(
-                    width: 150, // <-- Your width
+                    width: 160, // <-- Your width
                     height: 50, // <-- Your height
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),

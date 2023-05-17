@@ -71,9 +71,15 @@ flutter:
      - assets/litmustest_message_passing_results.spv
      - assets/litmustest_read_default.spv
      - assets/litmustest_read_results.spv
+     - assets/locktest_correct.spv
+     - assets/locktest_correctrelaxed.spv
+     - assets/locktest_speed.spv
+     - assets/locktest_speedrelaxed.spv
      - assets/parameters_basic.txt
+     - assets/parameters.txt
      - assets/parameters_stress.txt
      - assets/image.png
+    
     
 
 

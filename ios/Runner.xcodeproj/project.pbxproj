@@ -20,6 +20,7 @@
 		5C118BD929D477BB005ABAE4 /* dart_api.h in Sources */ = {isa = PBXBuildFile; fileRef = 5C118BD229D4777A005ABAE4 /* dart_api.h */; };
 		5C4BAF4F29D077DD00AA10B1 /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C4BAF4E29D077DD00AA10B1 /* MoltenVK.xcframework */; };
 		5C98EBAB29C9FC04007873E2 /* easyvk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C98EBA829C9FC03007873E2 /* easyvk.cpp */; };
+		5C9E1CD02A0B66CC0010154B /* lock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CEFBA7A2A00C6D900573755 /* lock.cpp */; };
 		5CC9BBA629D0771100A88954 /* litmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9BBA529D0771000A88954 /* litmus.cpp */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -72,6 +73,7 @@
 		5C98EBA929C9FC03007873E2 /* easyvk.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = easyvk.hpp; sourceTree = "<group>"; };
 		5C98EBAD29C9FC49007873E2 /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = ../../../../Applications/sdk/MoltenVK/MoltenVK.xcframework; sourceTree = "<group>"; };
 		5CC9BBA529D0771000A88954 /* litmus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = litmus.cpp; sourceTree = "<group>"; };
+		5CEFBA7A2A00C6D900573755 /* lock.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lock.cpp; sourceTree = "<group>"; };
 		600B38464F9A09BD94157845 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		72C11ECA7FF52A4061CAC2F2 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				5CEFBA7A2A00C6D900573755 /* lock.cpp */,
 				5C118BC729D474A5005ABAE4 /* dl.cpp */,
 				5C118BCA29D47758005ABAE4 /* dart_api_dl.c */,
 				5C118BCD29D47761005ABAE4 /* dart_api_dl.h */,
@@ -415,6 +418,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C9E1CD02A0B66CC0010154B /* lock.cpp in Sources */,
 				5C118BD429D477BB005ABAE4 /* dart_api_dl.h in Sources */,
 				5C118BD529D477BB005ABAE4 /* dart_native_api.h in Sources */,
 				5C118BD629D477BB005ABAE4 /* dart_version.h in Sources */,
@@ -523,6 +527,7 @@
 				DEVELOPMENT_TEAM = 5AVTADZHKJ;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_NO_COMMON_BLOCKS = NO;
 				HEADER_SEARCH_PATHS = (
 					"/Applications/sdk/MoltenVK/include/**",
 					"$(inherited)",
@@ -714,6 +719,7 @@
 				DEVELOPMENT_TEAM = 5AVTADZHKJ;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_NO_COMMON_BLOCKS = NO;
 				HEADER_SEARCH_PATHS = (
 					"/Applications/sdk/MoltenVK/include/**",
 					"$(inherited)",
@@ -745,6 +751,7 @@
 				DEVELOPMENT_TEAM = 5AVTADZHKJ;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_NO_COMMON_BLOCKS = NO;
 				HEADER_SEARCH_PATHS = (
 					"/Applications/sdk/MoltenVK/include/**",
 					"$(inherited)",

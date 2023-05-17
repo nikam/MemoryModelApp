@@ -27,7 +27,7 @@ class _FormPageState extends State {
                     style: const TextStyle(
                       fontSize: 24,
                       color: Colors.blue,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w600, 
                     ),
                     onChanged: (value) {
                       setState(() {
