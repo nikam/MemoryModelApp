@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:gpuiosbundle/utilities.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:gpuiosbundle/bar_graph.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+
 String shader_spv = "assets/litmustest_message_passing_default.spv";
 String result_spv = "assets/litmustest_message_passing_results.spv";
 String param_basic = "assets/parameters_basic.txt";
@@ -40,12 +43,14 @@ class _MessagePageState extends State<MessagePage> {
   TextEditingController userInput = TextEditingController();
 
   late String _iterationMssg;
-  late bool _visible;
+  late bool _visibleIndicator;
+  late bool _visibleBarChart;
   late bool _isExplorerButtonDisabled;
   late bool _isStressButtonDisabled;
   late bool _isResultButtonDisabled;
   late bool _isEmailButtonDisabled;
   late int _counter;
+  late double _percentageValue;
   final subscription = controller.stream;
   bool default_param = true;
 
@@ -94,8 +99,12 @@ class _MessagePageState extends State<MessagePage> {
     _isStressButtonDisabled = true;
     _isResultButtonDisabled = true;
     _isEmailButtonDisabled = true;
-    _visible = false;
-    _iterationMssg = "Counter is 0";
+    _visibleIndicator = false;
+    _visibleBarChart = false;
+    _percentageValue = 0;
+
+    var iterValue = _iter.text;
+    _iterationMssg = "Computed is 0 from $iterValue";
   }
 
   @override
@@ -171,16 +180,24 @@ class _MessagePageState extends State<MessagePage> {
       _isStressButtonDisabled = false;
       _isResultButtonDisabled = false;
       _isEmailButtonDisabled = false;
+      _visibleBarChart = false;
 
-      _iterationMssg = "Computed $_counter from 100";
-      _visible = true;
+      // _iterationMssg = "Computed $_counter from $_iter.value";
+      _visibleIndicator = true;
     });
 
     subscription.listen((data) {
       _counter = data;
       // print(_counter);
       setState(() {
-        _iterationMssg = "Computed $_counter from 100";
+        var iterValue = _iter.text;
+        _iterationMssg = "Computed $_counter from $iterValue";
+
+        _percentageValue = _counter / (int.parse(iterValue));
+
+        if (_counter == int.parse(_iter.text)) {
+          _visibleBarChart = true;
+        }
       });
     });
 
@@ -281,6 +298,10 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   showExplorerDialog() {
+    // setState(() {
+    //   _visibleBarChart = false;
+    //   _visibleIndicator = false;
+    // });
     showDialog(
         context: context,
         builder: (context) {
@@ -1212,10 +1233,39 @@ class _MessagePageState extends State<MessagePage> {
                   ),
                 ],
               ),
-              Visibility(
-                child: Text(_iterationMssg),
-                visible: _visible,
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Visibility(
+                  child: Column(
+                    children: [
+                      LinearPercentIndicator(
+                        lineHeight: 10,
+                        percent: _percentageValue,
+                        progressColor: Colors.deepPurple,
+                        backgroundColor: Colors.deepPurple.shade100,
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(_iterationMssg))
+                    ],
+                  ),
+                  visible: _visibleIndicator,
+                ),
               ),
+
+              // Padding(
+              //     padding: const EdgeInsets.all(10.0),
+              //     child: Visibility(child: Text(_iterationMssg))),
+
+              // here lies the bar graph code
+
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Visibility(
+                  child: SizedBox(height: 200, child: myBarGraph()),
+                  visible: _visibleBarChart,
+                ),
+              )
             ]),
       ),
     );

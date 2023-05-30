@@ -70,62 +70,63 @@ class _TuningPageState extends State<TuningPage> {
 
   // var isChecked = false;
 
-  var mssgPassingCoherency = false;
-  var storecoherency = false;
-  var readcoherency = false;
-  var storebuffer = false;
-  var twoplus2writecoherency = false;
-  var mssgpassingbarrier = false;
-  var storebarrier = false;
-  var readrmwbarrier = false;
-  var loadbufferbarrier = false;
-  var storebufferbarrier = false;
-  var storebufferrmwbarrier = false;
-  var twoplus2writermw = false;
-  var twoplus2writermwbarrier = false;
-  var rmwbarrier = false;
+  var messagePassingCoherency = false;
+  var messagePassingBarrier = false;
+  var loadBufferCoherency = false;
+  var loadBufferBarrier = false;
+  var storeBufferCoherency = false;
+  var storeBufferBarrier = false;
+  var readCoherency = false;
+  var readRMWBarrier = false;
+  var storeCoherency = false;
+  var storeBarrier = false;
+  var storeBufferRMWBarrier = false;
+  var twoPlusTwoWriteCoherency = false;
+  var twoPlusTwoWriteRMWBarrier = false;
   var rr = false;
-  var rrrmw = false;
+  var rrRMW = false;
   var rw = false;
-  var rwrmw = false;
+  var rwRMW = false;
   var wr = false;
-  var wrrmw = false;
+  var wrRMW = false;
   var ww = false;
-  var wwrmw = false;
+  var wwRMW = false;
 
-  var mssgPassing = false;
-  var mssgPassingCoherency_mutant = false;
-  var mssgPassingbarrier1 = false;
-  var mssgPassingbarrier2 = false;
-  var loadbuffer = false;
-  var loadbuffercoherency = false;
-  var loadbuffercoherency_mutant = false;
-  var loadbufferbarrier1 = false;
-  var loadbufferbarrier2 = false;
-  var readrmw = false;
-  var readcoherency_mutant = false;
-  var readrmwbarrier1 = false;
-  var readrmwbarrier2 = false;
+  var messagePassing = false;
+  var messagePassingBarrier1 = false;
+  var messagePassingBarrier2 = false;
+  var messagePassingCoherencyTuning = false;
+  var loadBuffer = false;
+  var loadBufferBarrier1 = false;
+  var loadBufferBarrier2 = false;
+  var loadBufferCoherencyTuning = false;
   var store = false;
-  var storecoherency_mutant = false;
-  var storebarrier1 = false;
-  var storebarrier2 = false;
-  var storebufferrmw = false;
-  var storebuffercoherency_mutant = false;
-  var storebufferrmwbarrier1 = false;
-  var storebufferrmwbarrier2 = false;
-  var twoplus2write = false;
-  var twoplus2writecoherency_mutant = false;
-  var twoplus2writermwbarrier1 = false;
-  var twoplus2writermwbarrier2 = false;
-  var rr_mutant = false;
-  var rrrmw_mutant = false;
-  var rw_mutant = false;
-  var rwrmw_mutant = false;
-  var wr_mutant = false;
-  var wrrmw_mutant = false;
-  var ww_mutant = false;
-  var wwrmw_mutant = false;
+  var storeBarrier1 = false;
+  var storeBarrier2 = false;
+  var storeCoherencyTuning = false;
+  var readRMW = false;
+  var readRMWBarrier1 = false;
+  var readRMWBarrier2 = false;
+  var readCoherencyTuning = false;
+  var storeBufferRMW = false;
+  var storeBufferRMWBarrier1 = false;
+  var storeBufferRMWBarrier2 = false;
+  var storeBufferCoherencyTuning = false;
+  var twoPlusTwoWriteRMW = false;
+  var twoPlusTwoWriteRMWBarrier1 = false;
+  var twoPlusTwoWriteRMWBarrier2 = false;
+  var twoPlusTwoWriteCoherencyTuning = false;
+  var rrMutant = false;
+  var rrRMWMutant = false;
+  var rwMutant = false;
+  var rwRMWMutant = false;
+  var wrMutant = false;
+  var wrRMWMutant = false;
+  // var wwMutant = false;
+  // var wwRMWMutant = false;
+
+  var tuningList = {};
+  var conformanceList = {};
 
 // explorer controllers
   TextEditingController _iter = TextEditingController(text: '100');
@@ -174,6 +175,74 @@ class _TuningPageState extends State<TuningPage> {
     _isEmailButtonDisabled = true;
     _visible = false;
     _iterationMssg = "Counter is 0";
+
+    var conformanceList = {
+      "assets/litmustest_message_passing_coherency.spv":
+          messagePassingCoherency,
+      "assets/litmustest_message_passing_barrier.spv": messagePassingBarrier,
+      "assets/litmustest_store_coherency.spv": storeCoherency,
+      "assets/litmustest_store_barrier.spv": storeBarrier,
+      "assets/litmustest_read_coherency.spv": readCoherency,
+      "assets/litmustest_read_barrier.spv": readRMWBarrier,
+      "assets/litmustest_load_buffer_coherency.spv": loadBufferCoherency,
+      "assets/litmustest_load_buffer_barrier.spv": loadBufferBarrier,
+      "assets/litmustest_store_buffer_coherency.spv": storeBufferCoherency,
+      "assets/litmustest_store_buffer_rmw_barrier.spv": storeBufferRMWBarrier,
+      "assets/litmustest_write_22_coherency.spv": twoPlusTwoWriteCoherency,
+      "assets/litmustest_write_22_rmw_barrier.spv": twoPlusTwoWriteRMWBarrier,
+      "assets/litmustest_corr_default.spv": rr,
+      "assets/litmustest_corr_rmw.spv": rrRMW,
+      "assets/litmustest_corw2_default.spv": rw,
+      "assets/litmustest_corw2_rmw.spv": rwRMW,
+      "assets/litmustest_cowr_default.spv": wr,
+      "assets/litmustest_cowr_rmw.spv": wrRMW,
+      "assets/litmustest_coww_default.spv": ww,
+      "assets/litmustest_coww_rmw.spv": wwRMW,
+    };
+
+    var tuningList = {
+      "assets/litmustest_message_passing_default.spv": messagePassing,
+      "assets/litmustest_message_passing_barrier": messagePassingBarrier1,
+      "assets/litmustest_message_passing_workgroup_barrier":
+          messagePassingBarrier2,
+      "assets/litmustest_message_passing_coherency.spv":
+          messagePassingCoherencyTuning,
+      "assets/litmustest_load_buffer_default.spv": loadBuffer,
+      "assets/litmustest_load_buffer_storage_workgroup_barrier.spv":
+          loadBufferBarrier1,
+      "assets/litmustest_load_buffer_workgroup_barrier": loadBufferBarrier2,
+      "assets/litmustest_load_buffer_coherency.spv": loadBufferCoherencyTuning,
+      "assets/litmustest_store_default.spv": store,
+      "assets/litmustest_store_storage_workgroup_barrier.spv": storeBarrier1,
+      "assets/itmustest_store_workgroup_barrier.spv": storeBarrier2,
+      "assets/litmustest_store_coherency.spv": storeCoherencyTuning,
+      "assets/litmustest_read_default.spv": readRMW,
+      "assets/litmustest_read_storage_workgroup_rmw_barrier.spv":
+          readRMWBarrier1,
+      "assets/litmustest_read_workgroup_rmw_barrier.spv": readRMWBarrier2,
+      "assets/litmustest_read_coherency.spv": readCoherencyTuning,
+      "assets/litmustest_store_buffer_default.spv": storeBufferRMW,
+      "assets/litmustest_store_buffer_storage_workgroup_rmw_barrier.spv":
+          storeBufferRMWBarrier1,
+      "assets/litmustest_store_buffer_workgroup_rmw_barrier.spv":
+          storeBufferRMWBarrier2,
+      "assets/litmustest_store_buffer_coherency.spv":
+          storeBufferCoherencyTuning,
+      "assets/litmustest_write_22_default.spv": twoPlusTwoWriteRMW,
+      "assets/litmustest_write_22_storage_workgroup_rmw_barrier.spv":
+          twoPlusTwoWriteRMWBarrier1,
+      "assets/litmustest_write_22_workgroup_rmw_barrier.spv":
+          twoPlusTwoWriteRMWBarrier2,
+      "assets/itmustest_write_22_coherency.spv": twoPlusTwoWriteCoherencyTuning,
+      "assets/litmustest_corr_mutation.spv": rrMutant,
+      "assets/litmustest_corr_rmw_mutation.spv": rrRMWMutant,
+      "assets/litmustest_corw2_mutation.spv": rwMutant,
+      "assets/litmustest_corw2_rmw_mutation.spv": rwRMWMutant,
+      "assets/litmustest_cowr_mutation.spv": wrMutant,
+      "assets/litmustest_cowr_rmw1_mutation.spv": wrRMWMutant,
+      // "assets/litmustest_coww_rmw.spv": wwMutant,
+      // "assets/litmustest_coww_rmw.spv": wwRMWMutant,
+    };
   }
 
   @override
@@ -360,190 +429,173 @@ class _TuningPageState extends State<TuningPage> {
 
   void _chooseConformanceTests() {
     setState(() {
-      mssgPassingCoherency = true;
-      storecoherency = true;
-      readcoherency = true;
-      storebuffer = true;
-      // storebufferrmw = true;
-      twoplus2writecoherency = true;
-      mssgpassingbarrier = true;
-      storebarrier = true;
-      // storebufferrmw = true;
-      readrmwbarrier = true;
-      loadbufferbarrier = true;
-      loadbuffercoherency = true;
-      storebufferbarrier = true;
-      storebufferrmwbarrier = true;
-      twoplus2writermwbarrier = true;
-      rmwbarrier = true;
+      messagePassingCoherency = true;
+      messagePassingBarrier = true;
+      loadBufferCoherency = true;
+      loadBufferBarrier = true;
+      storeCoherency = true;
+      storeBarrier = true;
+      readCoherency = true;
+      readRMWBarrier = true;
+      storeBufferCoherency = true;
+      storeBufferRMWBarrier = true;
+      twoPlusTwoWriteCoherency = true;
+      twoPlusTwoWriteRMWBarrier = true;
       rr = true;
-      rrrmw = true;
+      rrRMW = true;
       rw = true;
-      rwrmw = true;
+      rwRMW = true;
       wr = true;
-      wrrmw = true;
+      wrRMW = true;
       ww = true;
-      wwrmw = true;
+      wwRMW = true;
     });
   }
 
   void _chooseTuning() {
     setState(() {
-      mssgPassing = true;
-      mssgPassingCoherency_mutant = true;
-      mssgPassingbarrier1 = true;
-      mssgPassingbarrier2 = true;
-      loadbuffer = true;
-      // loadbuffercoherency = true;
-      loadbuffercoherency_mutant = true;
-      loadbufferbarrier1 = true;
-      loadbufferbarrier2 = true;
-      readrmw = true;
-      readcoherency_mutant = true;
-      readrmwbarrier1 = true;
-      readrmwbarrier2 = true;
+      messagePassing = true;
+      messagePassingBarrier1 = true;
+      messagePassingBarrier2 = true;
+      messagePassingCoherencyTuning = true;
+      loadBuffer = true;
+      loadBufferBarrier1 = true;
+      loadBufferBarrier2 = true;
+      loadBufferCoherencyTuning = true;
       store = true;
-      storecoherency_mutant = true;
-      storebarrier1 = true;
-      storebarrier2 = true;
-      storebufferrmw = true;
-      storebuffercoherency_mutant = true;
-      storebufferrmwbarrier1 = true;
-      storebufferrmwbarrier2 = true;
-      twoplus2write = true;
-      twoplus2writecoherency_mutant = true;
-      twoplus2writermwbarrier1 = true;
-      twoplus2writermwbarrier2 = true;
-      rr_mutant = true;
-      rrrmw_mutant = true;
-      rw_mutant = true;
-      rwrmw_mutant = true;
-      wr_mutant = true;
-      wrrmw_mutant = true;
-      ww_mutant = true;
-      wwrmw_mutant = true;
+      storeBarrier1 = true;
+      storeBarrier2 = true;
+      storeCoherencyTuning = true;
+      readRMW = true;
+      readRMWBarrier1 = true;
+      readRMWBarrier2 = true;
+      readCoherencyTuning = true;
+      storeBufferRMW = true;
+      storeBufferRMWBarrier1 = true;
+      storeBufferRMWBarrier2 = true;
+      storeBufferCoherencyTuning = true;
+      twoPlusTwoWriteRMW = true;
+      twoPlusTwoWriteRMWBarrier1 = true;
+      twoPlusTwoWriteRMWBarrier2 = true;
+      twoPlusTwoWriteCoherencyTuning = true;
+      rrMutant = true;
+      rrRMWMutant = true;
+      rwMutant = true;
+      rwRMWMutant = true;
+      wrMutant = true;
+      wrRMWMutant = true;
     });
   }
 
   void _chooseAllTests() {
     setState(() {
-      mssgPassingCoherency = true;
-      storecoherency = true;
-      readcoherency = true;
-      storebuffer = true;
-      twoplus2writecoherency = true;
-      mssgpassingbarrier = true;
-      storebarrier = true;
-      readrmwbarrier = true;
-      loadbufferbarrier = true;
-      storebufferbarrier = true;
-      storebufferrmwbarrier = true;
-      twoplus2writermw = true;
-      twoplus2writermwbarrier = true;
-      rmwbarrier = true;
+      messagePassingCoherency = true;
+      messagePassingBarrier = true;
+      loadBufferCoherency = true;
+      loadBufferBarrier = true;
+      storeCoherency = true;
+      storeBarrier = true;
+      readCoherency = true;
+      readRMWBarrier = true;
+      storeBufferCoherency = true;
+      storeBufferRMWBarrier = true;
+      twoPlusTwoWriteCoherency = true;
+      twoPlusTwoWriteRMWBarrier = true;
       rr = true;
-      rrrmw = true;
+      rrRMW = true;
       rw = true;
-      rwrmw = true;
+      rwRMW = true;
       wr = true;
-      wrrmw = true;
+      wrRMW = true;
       ww = true;
-      wwrmw = true;
+      wwRMW = true;
 
-      mssgPassing = true;
-      mssgPassingCoherency_mutant = true;
-      mssgPassingbarrier1 = true;
-      mssgPassingbarrier2 = true;
-      loadbuffer = true;
-      loadbuffercoherency = true;
-      loadbuffercoherency_mutant = true;
-      loadbufferbarrier1 = true;
-      loadbufferbarrier2 = true;
-      readrmw = true;
-      readcoherency_mutant = true;
-      readrmwbarrier1 = true;
-      readrmwbarrier2 = true;
+      messagePassing = true;
+      messagePassingBarrier1 = true;
+      messagePassingBarrier2 = true;
+      messagePassingCoherencyTuning = true;
+      loadBuffer = true;
+      loadBufferBarrier1 = true;
+      loadBufferBarrier2 = true;
+      loadBufferCoherencyTuning = true;
       store = true;
-      storecoherency_mutant = true;
-      storebarrier1 = true;
-      storebarrier2 = true;
-      storebufferrmw = true;
-      storebuffercoherency_mutant = true;
-      storebufferrmwbarrier1 = true;
-      storebufferrmwbarrier2 = true;
-      twoplus2write = true;
-      twoplus2writecoherency_mutant = true;
-      twoplus2writermwbarrier1 = true;
-      twoplus2writermwbarrier2 = true;
-      rr_mutant = true;
-      rrrmw_mutant = true;
-      rw_mutant = true;
-      rwrmw_mutant = true;
-      wr_mutant = true;
-      wrrmw_mutant = true;
-      ww_mutant = true;
-      wwrmw_mutant = true;
+      storeBarrier1 = true;
+      storeBarrier2 = true;
+      storeCoherencyTuning = true;
+      readRMW = true;
+      readRMWBarrier1 = true;
+      readRMWBarrier2 = true;
+      readCoherencyTuning = true;
+      storeBufferRMW = true;
+      storeBufferRMWBarrier1 = true;
+      storeBufferRMWBarrier2 = true;
+      storeBufferCoherencyTuning = true;
+      twoPlusTwoWriteRMW = true;
+      twoPlusTwoWriteRMWBarrier1 = true;
+      twoPlusTwoWriteRMWBarrier2 = true;
+      twoPlusTwoWriteCoherencyTuning = true;
+      rrMutant = true;
+      rrRMWMutant = true;
+      rwMutant = true;
+      rwRMWMutant = true;
+      wrMutant = true;
+      wrRMWMutant = true;
     });
   }
 
   void _chooseClearSelection() {
     setState(() {
-      mssgPassingCoherency = false;
-      storecoherency = false;
-      readcoherency = false;
-      storebuffer = false;
-      twoplus2writecoherency = false;
-      mssgpassingbarrier = false;
-      storebarrier = false;
-      readrmwbarrier = false;
-      loadbufferbarrier = false;
-      storebufferbarrier = false;
-      storebufferrmwbarrier = false;
-      twoplus2writermw = false;
-      twoplus2writermwbarrier = false;
-      rmwbarrier = false;
+      messagePassingCoherency = false;
+      messagePassingBarrier = false;
+      loadBufferCoherency = false;
+      loadBufferBarrier = false;
+      storeCoherency = false;
+      storeBarrier = false;
+      readCoherency = false;
+      readRMWBarrier = false;
+      storeBufferCoherency = false;
+      storeBufferRMWBarrier = false;
+      twoPlusTwoWriteCoherency = false;
+      twoPlusTwoWriteRMWBarrier = false;
       rr = false;
-      rrrmw = false;
+      rrRMW = false;
       rw = false;
-      rwrmw = false;
+      rwRMW = false;
       wr = false;
-      wrrmw = false;
+      wrRMW = false;
       ww = false;
-      wwrmw = false;
+      wwRMW = false;
 
-      mssgPassing = false;
-      mssgPassingCoherency_mutant = false;
-      mssgPassingbarrier1 = false;
-      mssgPassingbarrier2 = false;
-      loadbuffer = false;
-      loadbuffercoherency = false;
-      loadbuffercoherency_mutant = false;
-      loadbufferbarrier1 = false;
-      loadbufferbarrier2 = false;
-      readrmw = false;
-      readcoherency_mutant = false;
-      readrmwbarrier1 = false;
-      readrmwbarrier2 = false;
+      messagePassing = false;
+      messagePassingBarrier1 = false;
+      messagePassingBarrier2 = false;
+      messagePassingCoherencyTuning = false;
+      loadBuffer = false;
+      loadBufferBarrier1 = false;
+      loadBufferBarrier2 = false;
+      loadBufferCoherencyTuning = false;
       store = false;
-      storecoherency_mutant = false;
-      storebarrier1 = false;
-      storebarrier2 = false;
-      storebufferrmw = false;
-      storebuffercoherency_mutant = false;
-      storebufferrmwbarrier1 = false;
-      storebufferrmwbarrier2 = false;
-      twoplus2write = false;
-      twoplus2writecoherency_mutant = false;
-      twoplus2writermwbarrier1 = false;
-      twoplus2writermwbarrier2 = false;
-      rr_mutant = false;
-      rrrmw_mutant = false;
-      rw_mutant = false;
-      rwrmw_mutant = false;
-      wr_mutant = false;
-      wrrmw_mutant = false;
-      ww_mutant = false;
-      wwrmw_mutant = false;
+      storeBarrier1 = false;
+      storeBarrier2 = false;
+      storeCoherencyTuning = false;
+      readRMW = false;
+      readRMWBarrier1 = false;
+      readRMWBarrier2 = false;
+      readCoherencyTuning = false;
+      storeBufferRMW = false;
+      storeBufferRMWBarrier1 = false;
+      storeBufferRMWBarrier2 = false;
+      storeBufferCoherencyTuning = false;
+      twoPlusTwoWriteRMW = false;
+      twoPlusTwoWriteRMWBarrier1 = false;
+      twoPlusTwoWriteRMWBarrier2 = false;
+      twoPlusTwoWriteCoherencyTuning = false;
+      rrMutant = false;
+      rrRMWMutant = false;
+      rwMutant = false;
+      rwRMWMutant = false;
+      wrMutant = false;
+      wrRMWMutant = false;
     });
   }
 
@@ -1306,10 +1358,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: mssgPassingCoherency,
+                      value: messagePassing,
                       onChanged: (bool? value) {
                         setState(() {
-                          mssgPassingCoherency = value!;
+                          messagePassing = value!;
                         });
                       },
                     ),
@@ -1317,7 +1369,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Message Passing Coherency',
+                        'messagePassing',
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -1327,10 +1379,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: mssgpassingbarrier,
+                      value: messagePassingBarrier,
                       onChanged: (bool? value) {
                         setState(() {
-                          mssgpassingbarrier = value!;
+                          messagePassingBarrier = value!;
                         });
                       },
                     ),
@@ -1338,7 +1390,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Message Barrier',
+                        'messagePassingBarrier',
                       ),
                     ),
                   ]),
@@ -1346,6 +1398,206 @@ class _TuningPageState extends State<TuningPage> {
                   Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
                     Checkbox(
                       // title: Text('Message Passing'),
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: loadBufferCoherency,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          loadBufferCoherency = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+                      child: Text(
+                        'loadBufferCoherency',
+                        // textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ]),
+                  //    ]),
+                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    Checkbox(
+                      // title: Text('Message Passing')R,
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: loadBufferBarrier,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          loadBufferBarrier = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+                      child: const Text(
+                        'loadBufferBarrier',
+                      ),
+                    ),
+                  ]),
+
+                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    Checkbox(
+                      // title: Text('Message Passing'),
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: storeCoherency,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          storeCoherency = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+                      child: const Text(
+                        'storeCoherency',
+                      ),
+                    ),
+                  ]),
+
+                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    Checkbox(
+                      // title: Text('Message Passing'),
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: storeBarrier,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          storeBarrier = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+
+                      child: const Text(
+                        'storeBarrier',
+                      ),
+                    ),
+                  ]),
+
+                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    Checkbox(
+                      // title: Text('Message Passing')R,
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: readCoherency,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          readCoherency = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+                      child: const Text(
+                        'readCoherency',
+                      ),
+                    ),
+                    Checkbox(
+                      // title: Text('Message Passing'),
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: readRMWBarrier,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          readRMWBarrier = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+                      child: const Text(
+                        'readRMWBarrier',
+                      ),
+                    ),
+                    Checkbox(
+                      // title: Text('Message Passing'),
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: storeBufferCoherency,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          storeBufferCoherency = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+
+                      child: const Text(
+                        'storeBufferCoherency',
+                      ),
+                    ),
+                  ]),
+                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    Checkbox(
+                      // title: Text('Message Passing')R,
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: storeBufferRMWBarrier,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          storeBufferRMWBarrier = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+                      child: const Text(
+                        'storeBufferRMWBarrier',
+                      ),
+                    ),
+                    Checkbox(
+                      // title: Text('Message Passing'),
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: twoPlusTwoWriteCoherency,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          twoPlusTwoWriteCoherency = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+                      child: const Text(
+                        'twoPlusTwoWriteCoherency',
+                      ),
+                    ),
+                    Checkbox(
+                      // title: Text('Message Passing'),
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: twoPlusTwoWriteRMWBarrier,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          twoPlusTwoWriteRMWBarrier = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+
+                      child: const Text(
+                        'twoPlusTwoWriteRMWBarrier',
+                      ),
+                    ),
+                  ]),
+                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    Checkbox(
+                      // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
                       value: rr,
@@ -1358,104 +1610,18 @@ class _TuningPageState extends State<TuningPage> {
                     Container(
                       // width: double.infinity,
                       width: 75,
-                      child: Text(
-                        'RR',
-                        // textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ]),
-                  //    ]),
-                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    Checkbox(
-                      // title: Text('Message Passing')R,
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: storecoherency,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          storecoherency = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
                       child: const Text(
-                        'Store Coherency',
-                      ),
-                    ),
-                  ]),
-
-                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    Checkbox(
-                      // title: Text('Message Passing'),
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: storebarrier,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          storebarrier = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-                      child: const Text(
-                        'Store Barrier',
-                      ),
-                    ),
-                  ]),
-
-                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    Checkbox(
-                      // title: Text('Message Passing'),
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: rrrmw,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          rrrmw = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-
-                      child: const Text(
-                        'RR RMW',
-                      ),
-                    ),
-                  ]),
-
-                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    Checkbox(
-                      // title: Text('Message Passing')R,
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: readcoherency,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          readcoherency = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-                      child: const Text(
-                        'Read Coherency',
+                        'rr',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: readrmwbarrier,
+                      value: rrRMW,
                       onChanged: (bool? value) {
                         setState(() {
-                          readrmwbarrier = value!;
+                          rrRMW = value!;
                         });
                       },
                     ),
@@ -1463,7 +1629,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Read RMW Barrier',
+                        'rrRMW',
                       ),
                     ),
                     Checkbox(
@@ -1482,7 +1648,7 @@ class _TuningPageState extends State<TuningPage> {
                       width: 75,
 
                       child: const Text(
-                        'RW',
+                        'rw',
                       ),
                     ),
                   ]),
@@ -1491,10 +1657,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: loadbuffercoherency,
+                      value: rwRMW,
                       onChanged: (bool? value) {
                         setState(() {
-                          loadbuffercoherency = value!;
+                          rwRMW = value!;
                         });
                       },
                     ),
@@ -1502,82 +1668,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Load Buffer Coherency',
-                      ),
-                    ),
-                    Checkbox(
-                      // title: Text('Message Passing'),
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: loadbufferbarrier,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          loadbufferbarrier = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-                      child: const Text(
-                        'Load Buffer Barrier',
-                      ),
-                    ),
-                    Checkbox(
-                      // title: Text('Message Passing'),
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: rwrmw,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          rwrmw = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-
-                      child: const Text(
-                        'RW RMW',
-                      ),
-                    ),
-                  ]),
-                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    Checkbox(
-                      // title: Text('Message Passing')R,
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: storebuffer,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          storebuffer = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-                      child: const Text(
-                        'Store Buffer',
-                      ),
-                    ),
-                    Checkbox(
-                      // title: Text('Message Passing'),
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: storebufferrmwbarrier,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          storebufferrmwbarrier = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-                      child: const Text(
-                        'Store Buffer RMW Barrier',
+                        'rwRMW',
                       ),
                     ),
                     Checkbox(
@@ -1594,57 +1685,18 @@ class _TuningPageState extends State<TuningPage> {
                     Container(
                       // width: double.infinity,
                       width: 75,
-
                       child: const Text(
-                        'WR',
-                      ),
-                    ),
-                  ]),
-                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    Checkbox(
-                      // title: Text('Message Passing')R,
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: twoplus2writecoherency,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          twoplus2writecoherency = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-                      child: const Text(
-                        '2+2 Write Coherency',
+                        'wr',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: twoplus2writermwbarrier,
+                      value: wrRMW,
                       onChanged: (bool? value) {
                         setState(() {
-                          twoplus2writermwbarrier = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-                      child: const Text(
-                        '2+2 Write RMW Barrier',
-                      ),
-                    ),
-                    Checkbox(
-                      // title: Text('Message Passing'),
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: wwrmw,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          wwrmw = value!;
+                          wrRMW = value!;
                         });
                       },
                     ),
@@ -1653,7 +1705,7 @@ class _TuningPageState extends State<TuningPage> {
                       width: 75,
 
                       child: const Text(
-                        'WW RMW',
+                        'wrRMW',
                       ),
                     ),
                   ]),
@@ -1673,17 +1725,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'WW',
+                        'ww',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: wwrmw,
+                      value: wwRMW,
                       onChanged: (bool? value) {
                         setState(() {
-                          wwrmw = value!;
+                          wwRMW = value!;
                         });
                       },
                     ),
@@ -1691,7 +1743,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'WW RMW',
+                        'wwRMW',
                       ),
                     ),
                   ]),
@@ -1716,10 +1768,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: mssgPassing,
+                      value: messagePassing,
                       onChanged: (bool? value) {
                         setState(() {
-                          mssgPassing = value!;
+                          messagePassing = value!;
                         });
                       },
                     ),
@@ -1727,17 +1779,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Message Passing',
+                        'messagePassing',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: readrmwbarrier1,
+                      value: messagePassingBarrier1,
                       onChanged: (bool? value) {
                         setState(() {
-                          readrmwbarrier1 = value!;
+                          messagePassingBarrier1 = value!;
                         });
                       },
                     ),
@@ -1745,17 +1797,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Read RMW Barrier 1',
+                        'messagePassingBarrier1',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: twoplus2writermw,
+                      value: messagePassingBarrier2,
                       onChanged: (bool? value) {
                         setState(() {
-                          twoplus2writermw = value!;
+                          messagePassingBarrier2 = value!;
                         });
                       },
                     ),
@@ -1764,7 +1816,7 @@ class _TuningPageState extends State<TuningPage> {
                       width: 75,
 
                       child: const Text(
-                        '2+2 Write RMW',
+                        'messagePassingBarrier2',
                       ),
                     ),
                   ]),
@@ -1773,10 +1825,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: mssgPassingCoherency_mutant,
+                      value: messagePassingCoherencyTuning,
                       onChanged: (bool? value) {
                         setState(() {
-                          mssgPassingCoherency_mutant = value!;
+                          messagePassingCoherencyTuning = value!;
                         });
                       },
                     ),
@@ -1784,17 +1836,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Message Passing Coherency (mutant)',
+                        'messagePassingCoherencyTuning',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: readrmwbarrier2,
+                      value: loadBuffer,
                       onChanged: (bool? value) {
                         setState(() {
-                          readrmwbarrier2 = value!;
+                          loadBuffer = value!;
                         });
                       },
                     ),
@@ -1802,17 +1854,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Read RMW Barrier 2',
+                        'loadBuffer',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: twoplus2writecoherency_mutant,
+                      value: loadBufferBarrier1,
                       onChanged: (bool? value) {
                         setState(() {
-                          twoplus2writecoherency_mutant = value!;
+                          loadBufferBarrier1 = value!;
                         });
                       },
                     ),
@@ -1821,7 +1873,7 @@ class _TuningPageState extends State<TuningPage> {
                       width: 75,
 
                       child: const Text(
-                        '2+2 Write Coherency (Mutant)',
+                        'loadBufferBarrier1',
                       ),
                     ),
                   ]),
@@ -1830,10 +1882,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: mssgPassingbarrier1,
+                      value: loadBufferBarrier2,
                       onChanged: (bool? value) {
                         setState(() {
-                          mssgPassingbarrier1 = value!;
+                          loadBufferBarrier2 = value!;
                         });
                       },
                     ),
@@ -1841,7 +1893,25 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Message Passing Barrier 1',
+                        'loadBufferBarrier2',
+                      ),
+                    ),
+                    Checkbox(
+                      // title: Text('Message Passing'),
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: loadBufferCoherencyTuning,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          loadBufferCoherencyTuning = value!;
+                        });
+                      },
+                    ),
+                    Container(
+                      // width: double.infinity,
+                      width: 75,
+                      child: const Text(
+                        'loadBufferCoherencyTuning',
                       ),
                     ),
                     Checkbox(
@@ -1858,27 +1928,9 @@ class _TuningPageState extends State<TuningPage> {
                     Container(
                       // width: double.infinity,
                       width: 75,
-                      child: const Text(
-                        'Store',
-                      ),
-                    ),
-                    Checkbox(
-                      // title: Text('Message Passing'),
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: storecoherency_mutant,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          storecoherency_mutant = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
 
                       child: const Text(
-                        'Store Coherency (mutant)',
+                        'store',
                       ),
                     ),
                   ]),
@@ -1887,10 +1939,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: twoplus2writermwbarrier1,
+                      value: storeBarrier1,
                       onChanged: (bool? value) {
                         setState(() {
-                          twoplus2writermwbarrier1 = value!;
+                          storeBarrier1 = value!;
                         });
                       },
                     ),
@@ -1898,17 +1950,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        '2+2 Write RMW Barrier 1',
+                        'storeBarrier1',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: mssgPassingbarrier2,
+                      value: storeBarrier2,
                       onChanged: (bool? value) {
                         setState(() {
-                          loadbuffer = value!;
+                          storeBarrier2 = value!;
                         });
                       },
                     ),
@@ -1916,17 +1968,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Message Passing Barrier 2',
+                        'storeBarrier2',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: storebarrier1,
+                      value: storeCoherencyTuning,
                       onChanged: (bool? value) {
                         setState(() {
-                          storebarrier1 = value!;
+                          storeCoherencyTuning = value!;
                         });
                       },
                     ),
@@ -1935,7 +1987,7 @@ class _TuningPageState extends State<TuningPage> {
                       width: 75,
 
                       child: const Text(
-                        'Store Barrier 1',
+                        'storeCoherencyTuning',
                       ),
                     ),
                   ]),
@@ -1944,10 +1996,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: twoplus2writermwbarrier2,
+                      value: readRMW,
                       onChanged: (bool? value) {
                         setState(() {
-                          twoplus2writermwbarrier2 = value!;
+                          readRMW = value!;
                         });
                       },
                     ),
@@ -1955,17 +2007,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        '2 + 2 Write RMW Barrier 2',
+                        'readRMW',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: loadbuffer,
+                      value: readRMWBarrier1,
                       onChanged: (bool? value) {
                         setState(() {
-                          loadbuffer = value!;
+                          readRMWBarrier1 = value!;
                         });
                       },
                     ),
@@ -1973,17 +2025,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Load Buffer',
+                        'readRMWBarrier1',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: storebarrier2,
+                      value: readRMWBarrier2,
                       onChanged: (bool? value) {
                         setState(() {
-                          storebarrier2 = value!;
+                          readRMWBarrier2 = value!;
                         });
                       },
                     ),
@@ -1992,7 +2044,7 @@ class _TuningPageState extends State<TuningPage> {
                       width: 75,
 
                       child: const Text(
-                        'Store Barrier 2',
+                        'readRMWBarrier2',
                       ),
                     ),
                   ]),
@@ -2001,10 +2053,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: rr_mutant,
+                      value: readCoherencyTuning,
                       onChanged: (bool? value) {
                         setState(() {
-                          rr_mutant = value!;
+                          readCoherencyTuning = value!;
                         });
                       },
                     ),
@@ -2012,17 +2064,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'RR (mutant)',
+                        'readCoherencyTuning',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: loadbuffercoherency_mutant,
+                      value: storeBufferRMW,
                       onChanged: (bool? value) {
                         setState(() {
-                          loadbuffercoherency_mutant = value!;
+                          storeBufferRMW = value!;
                         });
                       },
                     ),
@@ -2030,17 +2082,17 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Load Buffer Coherency (mutant)',
+                        'storeBufferRMW',
                       ),
                     ),
                     Checkbox(
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: storebufferrmw,
+                      value: storeBufferRMWBarrier1,
                       onChanged: (bool? value) {
                         setState(() {
-                          storebufferrmw = value!;
+                          storeBufferRMWBarrier1 = value!;
                         });
                       },
                     ),
@@ -2049,7 +2101,7 @@ class _TuningPageState extends State<TuningPage> {
                       width: 75,
 
                       child: const Text(
-                        'Store Buffer RMW',
+                        'storeBufferRMWBarrier1',
                       ),
                     ),
                   ]),
@@ -2058,10 +2110,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: rrrmw_mutant,
+                      value: storeBufferRMWBarrier2,
                       onChanged: (bool? value) {
                         setState(() {
-                          rrrmw_mutant = value!;
+                          storeBufferRMWBarrier2 = value!;
                         });
                       },
                     ),
@@ -2069,7 +2121,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'RR RMW (mutant)',
+                        'storeBufferRMWBarrier2',
                       ),
                     ),
                   ]),
@@ -2078,10 +2130,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: loadbufferbarrier1,
+                      value: storeBufferCoherencyTuning,
                       onChanged: (bool? value) {
                         setState(() {
-                          loadbufferbarrier1 = value!;
+                          storeBufferCoherencyTuning = value!;
                         });
                       },
                     ),
@@ -2089,7 +2141,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Load Buffer Barrier 1',
+                        'storeBufferCoherencyTuning',
                       ),
                     ),
                   ]),
@@ -2098,10 +2150,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: storebuffercoherency_mutant,
+                      value: twoPlusTwoWriteRMW,
                       onChanged: (bool? value) {
                         setState(() {
-                          storebuffercoherency_mutant = value!;
+                          twoPlusTwoWriteRMW = value!;
                         });
                       },
                     ),
@@ -2109,7 +2161,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Store Buffer Coherency (mutant)',
+                        'twoPlusTwoWriteRMW',
                       ),
                     ),
                   ]),
@@ -2118,10 +2170,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: rw_mutant,
+                      value: twoPlusTwoWriteRMWBarrier1,
                       onChanged: (bool? value) {
                         setState(() {
-                          rw_mutant = value!;
+                          twoPlusTwoWriteRMWBarrier1 = value!;
                         });
                       },
                     ),
@@ -2129,7 +2181,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'RW (mutant)',
+                        'twoPlusTwoWriteRMWBarrier1',
                       ),
                     ),
                   ]),
@@ -2138,10 +2190,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: loadbufferbarrier2,
+                      value: twoPlusTwoWriteRMWBarrier2,
                       onChanged: (bool? value) {
                         setState(() {
-                          loadbufferbarrier2 = value!;
+                          twoPlusTwoWriteRMWBarrier2 = value!;
                         });
                       },
                     ),
@@ -2149,7 +2201,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Load Buffer Barrier 2',
+                        'twoPlusTwoWriteRMWBarrier2',
                       ),
                     ),
                   ]),
@@ -2160,10 +2212,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: storebufferrmwbarrier1,
+                      value: twoPlusTwoWriteCoherencyTuning,
                       onChanged: (bool? value) {
                         setState(() {
-                          storebufferrmwbarrier1 = value!;
+                          twoPlusTwoWriteCoherencyTuning = value!;
                         });
                       },
                     ),
@@ -2171,7 +2223,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Store Buffer RMW Barrier 1',
+                        'twoPlusTwoWriteCoherencyTuning',
                       ),
                     ),
                   ]),
@@ -2180,10 +2232,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: wr_mutant,
+                      value: rrMutant,
                       onChanged: (bool? value) {
                         setState(() {
-                          wr_mutant = value!;
+                          rrMutant = value!;
                         });
                       },
                     ),
@@ -2191,7 +2243,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'WR (mutant)',
+                        'rrMutant',
                       ),
                     ),
                   ]),
@@ -2200,10 +2252,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: readrmw,
+                      value: rrRMWMutant,
                       onChanged: (bool? value) {
                         setState(() {
-                          loadbufferbarrier2 = value!;
+                          rrRMWMutant = value!;
                         });
                       },
                     ),
@@ -2211,7 +2263,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Read RMW',
+                        'rrRMWMutant',
                       ),
                     ),
                   ]),
@@ -2220,10 +2272,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: storebufferrmwbarrier2,
+                      value: rwMutant,
                       onChanged: (bool? value) {
                         setState(() {
-                          loadbufferbarrier2 = value!;
+                          rwMutant = value!;
                         });
                       },
                     ),
@@ -2231,7 +2283,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Store Buffer RMW Barrier 2',
+                        'rwMutant',
                       ),
                     ),
                   ]),
@@ -2240,10 +2292,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: wrrmw_mutant,
+                      value: rwRMWMutant,
                       onChanged: (bool? value) {
                         setState(() {
-                          wrrmw_mutant = value!;
+                          rwRMWMutant = value!;
                         });
                       },
                     ),
@@ -2251,7 +2303,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'WR RMW (mutant)',
+                        'rwRMWMutant',
                       ),
                     ),
                   ]),
@@ -2260,10 +2312,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: readcoherency_mutant,
+                      value: wrMutant,
                       onChanged: (bool? value) {
                         setState(() {
-                          readcoherency_mutant = value!;
+                          wrMutant = value!;
                         });
                       },
                     ),
@@ -2271,7 +2323,7 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'Read Coherency (mutant)',
+                        'wrMutant',
                       ),
                     ),
                   ]),
@@ -2280,10 +2332,10 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing'),
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: ww_mutant,
+                      value: wrRMWMutant,
                       onChanged: (bool? value) {
                         setState(() {
-                          ww_mutant = value!;
+                          wrRMWMutant = value!;
                         });
                       },
                     ),
@@ -2291,30 +2343,50 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'WW (mutant)',
+                        'wrRMWMutant',
                       ),
                     ),
                   ]),
-                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    Checkbox(
-                      // title: Text('Message Passing'),
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: wwrmw_mutant,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          wwrmw_mutant = value!;
-                        });
-                      },
-                    ),
-                    Container(
-                      // width: double.infinity,
-                      width: 75,
-                      child: const Text(
-                        'WW RMW (mutant)',
-                      ),
-                    ),
-                  ]),
+                  // Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  //   Checkbox(
+                  //     // title: Text('Message Passing'),
+                  //     activeColor: Colors.white,
+                  //     checkColor: Colors.blue,
+                  //     value: wwMutant,
+                  //     onChanged: (bool? value) {
+                  //       setState(() {
+                  //         wwMutant = value!;
+                  //       });
+                  //     },
+                  //   ),
+                  //   Container(
+                  //     // width: double.infinity,
+                  //     width: 75,
+                  //     child: const Text(
+                  //       'wwMutant',
+                  //     ),
+                  //   ),
+                  // ]),
+                  // Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  //   Checkbox(
+                  //     // title: Text('Message Passing'),
+                  //     activeColor: Colors.white,
+                  //     checkColor: Colors.blue,
+                  //     value: wwRMWMutant,
+                  //     onChanged: (bool? value) {
+                  //       setState(() {
+                  //         wwRMWMutant = value!;
+                  //       });
+                  //     },
+                  //   ),
+                  //   Container(
+                  //     // width: double.infinity,
+                  //     width: 75,
+                  //     child: const Text(
+                  //       'wwRMWMutant',
+                  //     ),
+                  //   ),
+                  // ]),
                 ]),
                 const Padding(
                   padding: EdgeInsets.all(5.0),
@@ -2403,7 +2475,7 @@ class _TuningPageState extends State<TuningPage> {
                   child: Text(
                     'Test Type',
                     style: TextStyle(fontSize: 18.0),
-                    //   overflow: TextOverflow.ellipsis,   
+                    //   overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(height: 10),

@@ -17,10 +17,15 @@
 //#include <android/log.h>
 #include "easyvk.hpp"
 
+#include "json.hpp"
+
 //#define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__))
 
 using namespace std;
 using namespace easyvk;
+using namespace nlohmann;
+
+json j2;
 
 constexpr char *TAG = "LockTest";
 
@@ -29,8 +34,10 @@ bool checkCorrect = false;
 static Device getDevice(Instance &instance, ofstream &outputFile) {
     int idx = 0;
     Device device = instance.devices().at(idx);
-    outputFile << "Using device " << device.properties().deviceName << "\n";
-    outputFile << "\n";
+//    outputFile << "Using device " << device.properties().deviceName << "\n";
+//    outputFile << "\n";
+    
+    j2["Device"] = device.properties().deviceName;
     return device;
 }
 
@@ -40,7 +47,7 @@ static void clearMemory(Buffer &gpuMem, int size) {
     }
 }
 
-static void run(string &shader_file, string &testIterationStr, string &workgroupNumStr, string &workgroupSizeStr, ofstream &outputFile) {
+static void run(string &testName, string &shader_file, string &testIterationStr, string &workgroupNumStr, string &workgroupSizeStr, ofstream &outputFile) {
     bool allTestsCorrect = true;
 
     // initialize settings
@@ -50,10 +57,13 @@ static void run(string &shader_file, string &testIterationStr, string &workgroup
     int testIteration = atoi(testIterationStr.c_str());
     int workgroupNum = atoi(workgroupNumStr.c_str());
     int workgroupSize = atoi(workgroupSizeStr.c_str());
-    outputFile << "Test Iteration: " << testIteration << "\n";
-    outputFile << "Workgroup Number: " << workgroupNum << "\n";
-    outputFile << "Workgroup Size: " << workgroupSize << "\n";
-    outputFile << "\n";
+    
+    j2[testName] = { {"Test Iteration", testIteration}, {"Workgroup Number", workgroupNum}, {"Workgroup Size:", workgroupSize}};
+    
+//    outputFile << "Test Iteration: " << testIteration << "\n";
+//    outputFile << "Workgroup Number: " << workgroupNum << "\n";
+//    outputFile << "Workgroup Size: " << workgroupSize << "\n";
+//    outputFile << "\n";
 
     // set up buffers
     auto testLocations = Buffer(device, workgroupNum * workgroupSize);
@@ -93,23 +103,32 @@ static void run(string &shader_file, string &testIterationStr, string &workgroup
     program.teardown();
 
     std::chrono::duration<double> testDuration = end - start;
-    outputFile << "Total elapsed time: " << testDuration.count() << "s\n";
+   // outputFile << "Total elapsed time: " << testDuration.count() << "s\n";
+    j2["Total elapsed time"] = testDuration.count();
 
     if(checkCorrect) {
         if(readResults.load(0) != (workgroupNum * testIteration)) {
             if(readResults.load(0) == 0) {
-                outputFile << "Untouched output = " << readResults.load(0) << "\n";
+//                outputFile << "Untouched output = " << readResults.load(0) << "\n";
+                j2["Untouched Output"] = readResults.load(0);
             }
             else {
-                outputFile << "Wrong output = " << readResults.load(0) << "\n";
+//                outputFile << "Wrong output = " << readResults.load(0) << "\n";
+                j2["Wrong Output"] = readResults.load(0);
 
             }
-            outputFile << "Correct output = " << workgroupNum * testIteration << "\n";
+            
+            j2["Correct Output"] = workgroupNum * testIteration;
+            //outputFile << "Correct output = " << workgroupNum * testIteration << "\n";
             allTestsCorrect = false;
         }
         else {
-            outputFile << "Output = " << readResults.load(0) << "\n";
-            outputFile << "Test was successful \n";
+            
+            j2["Output"] = readResults.load(0);
+            j2["Result"] =  "Test was successful";
+            
+//            outputFile << "Output = " << readResults.load(0) << "\n";
+//            outputFile << "Test was successful \n";
         }
     }
 
@@ -148,9 +167,9 @@ int runLockTest(char* test, char*  shader, char*  testIter, char * workgroupNum_
     //+ "/" + shaderFile + "_output.txt";
     outputFile.open(outputFilePath);
 
-    outputFile << "Test Name: " << testName << "\n";
-    outputFile << "Shader Name: " << shaderFile << "\n";
-    outputFile << "\n";
+//    outputFile << "Test Name: " << testName << "\n";
+//    outputFile << "Shader Name: " << shaderFile << "\n";
+//    outputFile << "\n";
     
     checkCorrect = true;
 
@@ -169,13 +188,16 @@ int runLockTest(char* test, char*  shader, char*  testIter, char * workgroupNum_
     srand(time(NULL));
 
     try{
-        run(shaderFile, testIteration, workgroupNum, workgroupSize, outputFile);
+        run(testName, shaderFile, testIteration, workgroupNum, workgroupSize, outputFile);
     }
     catch (const std::runtime_error& e) {
         outputFile << e.what() << "\n";
         outputFile.close();
         return 1;
     }
+    
+    outputFile << j2.dump(4);
+    
     outputFile.close();
 
 //    LOGD(

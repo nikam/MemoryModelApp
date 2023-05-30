@@ -69,6 +69,7 @@
 		5C118BD229D4777A005ABAE4 /* dart_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dart_api.h; sourceTree = "<group>"; };
 		5C118BD329D47780005ABAE4 /* dart_api_dl_impl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dart_api_dl_impl.h; sourceTree = "<group>"; };
 		5C4BAF4E29D077DD00AA10B1 /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = ../../../../../Applications/sdk/MoltenVK/MoltenVK.xcframework; sourceTree = "<group>"; };
+		5C8CE9442A205DE2006A3C42 /* json.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json.hpp; sourceTree = "<group>"; };
 		5C98EBA829C9FC03007873E2 /* easyvk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = easyvk.cpp; sourceTree = SOURCE_ROOT; };
 		5C98EBA929C9FC03007873E2 /* easyvk.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = easyvk.hpp; sourceTree = "<group>"; };
 		5C98EBAD29C9FC49007873E2 /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = ../../../../Applications/sdk/MoltenVK/MoltenVK.xcframework; sourceTree = "<group>"; };
@@ -159,6 +160,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				5C8CE9442A205DE2006A3C42 /* json.hpp */,
 				5CEFBA7A2A00C6D900573755 /* lock.cpp */,
 				5C118BC729D474A5005ABAE4 /* dl.cpp */,
 				5C118BCA29D47758005ABAE4 /* dart_api_dl.c */,
