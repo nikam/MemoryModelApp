@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+//import 'dart:js_interop';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter/services.dart';
 import 'dart:isolate';
@@ -25,6 +26,16 @@ String cache = "";
 
 var iter = 0;
 String outputFile = "";
+String tuningOutputFile = "";
+String conformanceOutputFile = "";
+
+var tuningRandom = Random();
+int tuningrandomSeed = 10;
+int currTestIterations = 1;
+int tuningTestWorkgroups = 0;
+int tuningMaxWorkgroups = 0;
+int tuningWorkgroupSize = 0;
+int numConfig = 0;
 
 Future<String> getPathCacheAssets(String arg) async {
   //load the file from assets
@@ -90,16 +101,40 @@ void mssg_init(SendPort port) {
 //   return tmp;
 // }
 
+int hashCode(String s) {
+  var h = 0, l = s.length, i = 0;
+  if (l > 0) {
+    while (i < l) {
+      // print(s[i]);
+      h = (h << 5) - h + s.codeUnitAt(i);
+      i += 1;
+    }
+  }
+  return h;
+}
+
+class PRNGInternal {
+  var seed;
+  PRNGInternal(var seed) {
+    this.seed = hashCode(seed);
+    if (this.seed <= 0) this.seed += 2147483646;
+  }
+}
+
+int prngGen(var seed) {
+  var prng = PRNGInternal(seed);
+
+  var x = prng.seed;
+  var y = 16807;
+
+  prng.seed = (x.toUnsigned(32) * y.toUnsigned(32)).toSigned(32) % 2147483646;
+  if (prng.seed < 0) prng.seed += 2147483646;
+
+  return prng.seed;
+}
+
 /// I am isolate code/////
 class FFIBridge {
-  static var tuningRandom = new Random();
-  static int tuningrandomSeed = 10;
-  static int currTestIterations = 1;
-  static int tuningTestWorkgroups = 0;
-  static int tuningMaxWorkgroups = 0;
-  static int tuningWorkgroupSize = 0;
-  static int numConfig = 0;
-
   //static var tuningShader
 
   static int randomGenerator(int min, int max) {
@@ -161,9 +196,9 @@ class FFIBridge {
     // assign the global path value
     cache = tempDir.path;
 
-    param_tmp = "$cache/$param_tmp";
+    param_tmp = "$cache" + "/assets/parameters.txt";
 
-    print(param_tmp);
+    //print(param_tmp);
 
     // now we write these parameters to our cache file
 
@@ -201,15 +236,43 @@ class FFIBridge {
     tuningWorkgroupSize = int.parse(size);
     numConfig = int.parse(configNum);
 
+    // this si where we use the configNum
+
+    var fileMap = {};
+
+    var tmpRandom = Random();
+
     if (seed.isEmpty) {
-      tuningRandom = Random(10);
+      tmpRandom = Random(10);
     } else {
-      tuningRandom = Random(tuningrandomSeed);
+      tmpRandom = Random(prngGen(seed));
     }
 
-    await writetuningParams("Tuning Test", false);
+    for (int i = 0; i < numConfig; i++) {
+      tuningRandom = Random(tmpRandom.nextInt(prngGen(seed)));
 
-    call_bridge(param_tmp, spv, res_spv);
+      await writetuningParams("Tuning Test", false);
+
+      //print(param_tmp);
+
+      await call_bridge(param_tmp, spv, res_spv);
+
+      // print(outputFile);
+      var tmp_Str = jsonDecode(File(outputFile).readAsStringSync());
+
+      // fileMap["$i"] = File(outputFile).readAsStringSync();
+      fileMap["$i"] = tmp_Str;
+
+      if (await File(outputFile).exists()) {
+        await File(outputFile).delete();
+      }
+    }
+
+    String jsonstringmap = JsonEncoder.withIndent(' ' * 4).convert(fileMap);
+
+    File file = await File(outputFile).create(recursive: true);
+
+    await file.writeAsString(jsonstringmap);
   }
 
   static Future<void> run_isolate_lock(
@@ -299,10 +362,10 @@ class FFIBridge {
 
   static Future<void> run_isolate_litmus(
       var shaderComp, var shaderRes, var para, var path) async {
-    print(shaderComp);
-    print(shaderRes);
-    print(para);
-    print(path);
+    // print(shaderComp);
+    // print(shaderRes);
+    // print(para);
+    // print(path);
 
     //print(rootBundle.
     List<String> list = [shaderComp, shaderRes, para, path];

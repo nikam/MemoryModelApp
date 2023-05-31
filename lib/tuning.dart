@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 //import 'dart:core';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 //import 'package:gpuiosbundle/forms.dart';
@@ -59,6 +60,9 @@ class _TuningPageState extends State<TuningPage> {
   late int _counter;
   final subscription = controller.stream;
   bool default_param = true;
+  //late bool _visibleTable;
+
+  List<DataRow> _rowList = [];
 
   var pressExplorer = false;
   var pressTuning = false;
@@ -66,6 +70,7 @@ class _TuningPageState extends State<TuningPage> {
 
   var _visibleExplorer = false;
   var _visibleTuning = false;
+  var _visibleTable = false;
   //var _visibleConformance = false;
 
   // var isChecked = false;
@@ -125,6 +130,160 @@ class _TuningPageState extends State<TuningPage> {
   // var wwMutant = false;
   // var wwRMWMutant = false;
 
+  var tuningListMap = {
+    "assets/litmustest_message_passing_default.spv": [
+      "messagePassing",
+      "assets/litmustest_message_passing_results.spv"
+    ],
+
+    "assets/litmustest_message_passing_barrier.spv": [
+      "messagePassingBarrier1",
+      "assets/litmustest_message_passing_results.spv"
+    ],
+
+    "assets/litmustest_message_passing_workgroup_barrier.spv": [
+      "messagePassingBarrier2",
+      "assets/litmustest_message_passing_results.spv"
+    ],
+
+    "assets/litmustest_message_passing_coherency.spv": [
+      "messagePassingCoherencyTuning",
+      "assets/litmustest_message_passing_coherency_results.spv"
+    ],
+
+    "assets/litmustest_load_buffer_default.spv": [
+      "loadBuffer",
+      "assets/litmustest_load_buffer_results.spv"
+    ],
+
+    "assets/litmustest_load_buffer_storage_workgroup_barrier.spv": [
+      "loadBufferBarrier1",
+      "assets/litmustest_load_buffer_results.spv"
+    ],
+
+    "assets/litmustest_load_buffer_workgroup_barrier.spv": [
+      "loadBufferBarrier2",
+      "assets/litmustest_load_buffer_results.spv"
+    ],
+
+    "assets/litmustest_load_buffer_coherency.spv": [
+      "loadBufferCoherencyTuning",
+      "assets/litmustest_load_buffer_coherency_results.spv"
+    ],
+
+    "assets/litmustest_store_default.spv": [
+      "store",
+      "assets/litmustest_store_results.spv"
+    ],
+
+    "assets/litmustest_store_storage_workgroup_barrier.spv": [
+      "storeBarrier1",
+      "assets/litmustest_store_results.spv"
+    ],
+
+    "assets/itmustest_store_workgroup_barrier.spv": [
+      "storeBarrier2",
+      "assets/litmustest_store_results.spv"
+    ],
+
+    "assets/litmustest_store_coherency.spv": [
+      "storeCoherencyTuning",
+      "assets/litmustest_store_coherency_results.spv"
+    ],
+
+    "assets/litmustest_read_default.spv": [
+      "readRMW",
+      "assets/litmustest_read_results.spv"
+    ],
+
+    "assets/litmustest_read_storage_workgroup_rmw_barrier.spv": [
+      "readRMWBarrier1",
+      "assets/litmustest_read_results.spv"
+    ],
+
+    "assets/litmustest_read_workgroup_rmw_barrier.spv": [
+      "readRMWBarrier2",
+      "assets/litmustest_read_results.spv"
+    ],
+
+    "assets/litmustest_read_coherency.spv": [
+      "readCoherencyTuning",
+      "assets/litmustest_read_coherency_results.spv"
+    ],
+
+    "assets/litmustest_store_buffer_default.spv": [
+      "storeBufferRMW",
+      "assets/litmustest_store_buffer_results.spv"
+    ],
+
+    "assets/litmustest_store_buffer_storage_workgroup_rmw_barrier.spv": [
+      "storeBufferRMWBarrier1",
+      "assets/litmustest_store_buffer_results.spv"
+    ],
+
+    "assets/litmustest_store_buffer_workgroup_rmw_barrier.spv": [
+      "storeBufferRMWBarrier2",
+      "assets/litmustest_store_buffer_results.spv"
+    ],
+
+    "assets/litmustest_store_buffer_coherency.spv": [
+      "storeBufferCoherencyTuning",
+      "assets/litmustest_store_buffer_coherency_results.spv"
+    ],
+
+    "assets/litmustest_write_22_default.spv": [
+      "twoPlusTwoWriteRMW",
+      "assets/litmustest_write_22_results.spv"
+    ],
+
+    "assets/litmustest_write_22_storage_workgroup_rmw_barrier.spv": [
+      "twoPlusTwoWriteRMWBarrier1",
+      "assets/litmustest_write_22_results.spv"
+    ],
+
+    "assets/litmustest_write_22_workgroup_rmw_barrier.spv": [
+      "twoPlusTwoWriteRMWBarrier2",
+      "assets/litmustest_write_22_results.spv"
+    ],
+
+    "assets/itmustest_write_22_coherency.spv": [
+      "twoPlusTwoWriteCoherencyTuning",
+      "assets/litmustest_write_22_coherency_results.spv"
+    ],
+
+    "assets/litmustest_corr_mutation.spv": [
+      "rrMutant",
+      "assets/litmustest_corr_results.spv"
+    ],
+
+    "assets/litmustest_corr_rmw_mutation.spv": [
+      "rrRMWMutant",
+      "assets/litmustest_corr_results.spv"
+    ],
+
+    "assets/litmustest_corw2_mutation.spv": [
+      "rwMutant",
+      "assets/litmustest_corw2_results.spv"
+    ],
+
+    "assets/litmustest_corw2_rmw_mutation.spv": [
+      "rwRMWMutant",
+      "assets/litmustest_corw2_results.spv"
+    ],
+
+    "assets/litmustest_cowr_mutation.spv": [
+      "wrMutant",
+      "assets/litmustest_cowr_results.spv"
+    ],
+
+    "assets/litmustest_cowr_rmw1_mutation.spv": [
+      "wrRMWMutant",
+      "assets/llitmustest_cowr_results.spv"
+    ],
+    // "assets/litmustest_coww_rmw.spv": wwMutant,
+    // "assets/litmustest_coww_rmw.spv": wwRMWMutant,
+  };
+
   var tuningList = {};
   var conformanceList = {};
 
@@ -174,6 +333,7 @@ class _TuningPageState extends State<TuningPage> {
     _isResultButtonDisabled = true;
     _isEmailButtonDisabled = true;
     _visible = false;
+    _visibleTable = false;
     _iterationMssg = "Counter is 0";
 
     var conformanceList = {
@@ -202,15 +362,15 @@ class _TuningPageState extends State<TuningPage> {
 
     var tuningList = {
       "assets/litmustest_message_passing_default.spv": messagePassing,
-      "assets/litmustest_message_passing_barrier": messagePassingBarrier1,
-      "assets/litmustest_message_passing_workgroup_barrier":
+      "assets/litmustest_message_passing_barrier.spv": messagePassingBarrier1,
+      "assets/litmustest_message_passing_workgroup_barrier.spv":
           messagePassingBarrier2,
       "assets/litmustest_message_passing_coherency.spv":
           messagePassingCoherencyTuning,
       "assets/litmustest_load_buffer_default.spv": loadBuffer,
       "assets/litmustest_load_buffer_storage_workgroup_barrier.spv":
           loadBufferBarrier1,
-      "assets/litmustest_load_buffer_workgroup_barrier": loadBufferBarrier2,
+      "assets/litmustest_load_buffer_workgroup_barrier.spv": loadBufferBarrier2,
       "assets/litmustest_load_buffer_coherency.spv": loadBufferCoherencyTuning,
       "assets/litmustest_store_default.spv": store,
       "assets/litmustest_store_storage_workgroup_barrier.spv": storeBarrier1,
@@ -251,6 +411,19 @@ class _TuningPageState extends State<TuningPage> {
       super.setState(fn);
     }
   }
+
+  // void _addRow() {
+  //   // Built in Flutter Method.
+  //   setState(() {
+  //     // This call to setState tells the Flutter framework that something has
+  //     // changed in this State, which causes it to rerun the build method below.
+  //     _rowList.add(DataRow(cells: <DataCell>[
+  //       DataCell(Text('BBBBBB')),
+  //       DataCell(Text('2')),
+  //       DataCell(Text('No')),
+  //     ]));
+  //   });
+  // }
 
   void _tuningClick() {
     print("reached here");
@@ -310,6 +483,89 @@ class _TuningPageState extends State<TuningPage> {
     _stressAssignmentStrategy.text = '100';
   }
 
+  void _computeTuning() async {
+    setState(() {
+      _counter = 0;
+      _iterationMssg = "Computed $_counter from 100";
+      _visible = true;
+      _visibleTable = true;
+    });
+
+    subscription.listen((data) {
+      _counter = data;
+      // print(_counter);
+      setState(() {
+        _iterationMssg = "Computed $_counter from 100";
+      });
+    });
+
+    //use the selected logic
+
+    var active_shaders = [];
+
+    tuningList.forEach((key, value) {
+      if (value == true) {
+        active_shaders.add(key);
+      }
+    });
+
+    currTestIterations = int.parse(_tIter.text);
+    tuningTestWorkgroups = int.parse(_tWorkgroup.text);
+    tuningMaxWorkgroups = int.parse(_tMaxworkgroup.text);
+    tuningWorkgroupSize = int.parse(_tSize.text);
+    numConfig = int.parse(_tConfigNum.text);
+    var seed = _tRandomSeed.text;
+
+    var fileMap = {};
+
+    var tmpRandom = Random();
+
+    if (seed.isEmpty) {
+      tmpRandom = Random(10);
+    } else {
+      tmpRandom = Random(prngGen(seed));
+    }
+
+    var tuningoutput = "$cache" + "/tuning.txt";
+
+    for (int i = 0; i < numConfig; i++) {
+      // var tuningRandom = Random(tmpRandom.nextInt(prngGen(seed)));
+
+      // // create the parameters
+      // await FFIBridge.writetuningParams("Tuning Test", false);
+
+      // // open a outputFile
+      // File file = await File(tuningoutput).create(recursive: true);
+
+      // for (int i = 0; i < active_shaders.length; i++) {
+      //   await call_bridge(
+      //       param_tmp, active_shaders[i], tuningListMap[active_shaders[i]]![1]);
+      //   var tmp_Str = File(outputFile).readAsStringSync();
+      //   await file.writeAsString(tmp_Str, mode: FileMode.append);
+      // }
+
+      setState(() {
+        // This call to setState tells the Flutter framework that something has
+        // changed in this State, which causes it to rerun the build method below.
+
+        _rowList.add(DataRow(cells: <DataCell>[
+          DataCell(Text('$i')),
+          DataCell(MaterialButton(
+            onPressed: () {},
+            child: Text("Statistics"),
+            color: Colors.blue,
+          )),
+          DataCell(Text('No')),
+          DataCell(Text('No')),
+          DataCell(Text('No')),
+          DataCell(Text('No')),
+          DataCell(Text('No')),
+          DataCell(Text('No')),
+        ]));
+      });
+    }
+  }
+
   void _compute() async {
     setState(() {
       _counter = 0;
@@ -321,6 +577,7 @@ class _TuningPageState extends State<TuningPage> {
 
       _iterationMssg = "Computed $_counter from 100";
       _visible = true;
+      _visibleTable = true;
     });
 
     subscription.listen((data) {
@@ -1358,7 +1615,7 @@ class _TuningPageState extends State<TuningPage> {
                       // title: Text('Message Passing')R,
                       activeColor: Colors.white,
                       checkColor: Colors.blue,
-                      value: messagePassing,
+                      value: messagePassingCoherency,
                       onChanged: (bool? value) {
                         setState(() {
                           messagePassing = value!;
@@ -1369,8 +1626,8 @@ class _TuningPageState extends State<TuningPage> {
                       // width: double.infinity,
                       width: 75,
                       child: const Text(
-                        'messagePassing',
-                        textAlign: TextAlign.center,
+                        'messagePassingCoherency',
+                        // textAlign: TextAlign.center,
                       ),
                     ),
                   ]),
@@ -2526,6 +2783,9 @@ class _TuningPageState extends State<TuningPage> {
                               pressConformance = false;
                               _visibleExplorer = false;
                               _visibleTuning = true;
+                              _visibleTable = true;
+
+                              _computeTuning();
                             });
                           },
                           child: const Text('Tuning'),
@@ -3239,6 +3499,22 @@ class _TuningPageState extends State<TuningPage> {
                 Visibility(
                   child: Text(_iterationMssg),
                   visible: _visible,
+                ),
+                Visibility(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(columns: [
+                      DataColumn(label: Text('Run Number')),
+                      DataColumn(label: Text('Run Statistics')),
+                      DataColumn(label: Text('Test Completed')),
+                      DataColumn(label: Text('Overall Progress')),
+                      DataColumn(label: Text('Time (seconds)')),
+                      DataColumn(label: Text('Sequential')),
+                      DataColumn(label: Text('Interleaved')),
+                      DataColumn(label: Text('Weak')),
+                    ], rows: _rowList),
+                  ),
+                  visible: _visibleTable,
                 ),
               ]),
         ),

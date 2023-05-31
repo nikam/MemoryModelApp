@@ -126,6 +126,11 @@ class _MessagePageState extends State<MessagePage> {
         _tWorkgroup.text,
         _tMaxworkgroup.text,
         _tSize.text);
+
+    setState(() {
+      _visibleIndicator = true;
+      _visibleBarChart = true;
+    });
   }
 
   void _changeStress() {
@@ -275,10 +280,14 @@ class _MessagePageState extends State<MessagePage> {
     call_bridge(param_tmp, shader_spv, result_spv);
   }
 
-  void _results() {
+  void _results([outputType]) {
     String outputPath = FFIBridge.getFile();
 
     final contents = readCounter(outputPath);
+
+    // if (outputType == "tuning") {
+    //   final contents = readCounter(tuningOutputFile);
+    // }
 
     dynamic output;
 
